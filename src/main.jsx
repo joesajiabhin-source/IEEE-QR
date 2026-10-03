@@ -113,20 +113,28 @@ function PublicProfile({ slug }) {
       : <main>
           <section className="hero-stage" ref={heroRef} aria-label="IEEE coordinator profile introduction">
             <div className="hero-glow" aria-hidden="true" />
+            <div className="hero-grid-pattern" aria-hidden="true" />
             <div className="hero-inner">
               <p className="hero-caption">IEEE STUDENT BRANCH · VJEC</p>
+              <div className="hero-edition" aria-hidden="true"><span>OFFICIAL</span><strong>PEOPLE<br />OF IEEE</strong><span>VOLUME 001 / VJEC</span></div>
+              <div className="hero-orbit" aria-hidden="true"><span>VJEC</span><span>IEEE</span><span>STUDENT BRANCH</span></div>
               <div className="hero-type-motion"><h1 className="hero-word" aria-label="IEEE"><span aria-hidden="true">I</span><span aria-hidden="true">E</span><span aria-hidden="true">E</span><span aria-hidden="true">E</span></h1></div>
               <div className="portrait-motion">{(profile || slug === 'arjun') && <Portrait profile={profile || { slug, name: '', photo: null }} />}</div>
+              {profile && <div className="hero-nameplate"><span>IDENTITY / {String(profile.id).padStart(4, '0')}</span><strong>{profile.name}</strong><em>{profile.designation}</em></div>}
+              <div className="hero-seal" aria-hidden="true"><span>MEET THE<br />PEOPLE</span><strong>↗</strong></div>
+              <div className="hero-side-type" aria-hidden="true">IDEAS IN MOTION — PEOPLE IN FOCUS</div>
               <div className="hero-bottom"><a href="#sb-vjec" className="scroll-cue">SCROLL TO EXPLORE <ArrowDown size={15} /></a>{profile && <span>COORDINATOR ID · {String(profile.id).padStart(4, '0')}</span>}</div>
             </div>
           </section>
 
           {profile ? <section className="about-section" id="sb-vjec" ref={aboutRef} aria-labelledby="branch-heading">
+            <div className="marquee" aria-hidden="true"><div>IEEE SB VJEC <span>✳</span> PEOPLE MAKE THE BRANCH <span>✳</span> IEEE SB VJEC <span>✳</span> PEOPLE MAKE THE BRANCH <span>✳</span></div></div>
             <div className="shell">
               <p className="eyebrow about-kicker">IEEE STUDENT BRANCH · VIMAL JYOTHI ENGINEERING COLLEGE</p>
               <h2 className="branch-heading" id="branch-heading">SB VJEC<span>.</span></h2>
+              <div className="section-stamp" aria-hidden="true">CONNECTED<br />BY DESIGN <span>✳</span></div>
               <div className="branch-grid">
-                <div className="branch-intro"><p className="branch-note">The person behind the ID</p><h3>{profile.name}</h3><p className="branch-role">{profile.designation}{profile.team_role ? ` · ${profile.team_role}` : ''}</p><p className="branch-bio">{profile.bio || `${profile.name} is a coordinator at ${profile.organization || 'IEEE SB VJEC'}.`}</p></div>
+                <div className="branch-intro"><p className="branch-note">The person behind the ID</p><h3>{profile.name}</h3><p className="branch-role">{profile.designation}{profile.team_role ? ` · ${profile.team_role}` : ''}</p><p className="branch-bio">{profile.bio || `${profile.name} is a coordinator at ${profile.organization || 'IEEE SB VJEC'}.`}</p><span className="intro-asterisk" aria-hidden="true">✳</span></div>
                 <div className="accounts-panel"><div className="panel-label"><span>CONNECT ONLINE</span><span>{String(accounts.length).padStart(2, '0')} ACCOUNTS</span></div>{accounts.length ? <div className="account-list">{accounts.map(({ label, href, icon: Icon }, index) => <a className="account-link" key={`${label}-${index}`} href={href} target="_blank" rel="noreferrer" style={{ '--index': index }}><span className="account-icon"><Icon size={22} /></span><span>{label}</span><ArrowUpRight className="account-arrow" size={20} /></a>)}</div> : <p className="empty-accounts">Official account links will appear here when added.</p>}</div>
               </div>
               <div className="profile-details"><div><span>ORGANIZATION</span><strong>{profile.organization || 'IEEE SB VJEC'}</strong></div>{profile.society && <div><span>SOCIETY</span><strong>{profile.society}</strong></div>}{profile.department && <div><span>ACADEMIC DEPARTMENT</span><strong>{profile.department}</strong></div>}</div>
