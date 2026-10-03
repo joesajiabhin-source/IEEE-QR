@@ -1,32 +1,107 @@
 import React, { useEffect, useState } from 'react';
 import { createRoot } from 'react-dom/client';
-import { ArrowDownToLine, ArrowRight, ArrowUpRight, Check, Copy, Instagram, Linkedin, Link as LinkIcon, Mail, Phone, QrCode, Share2, Sparkles, X } from 'lucide-react';
+import { ArrowDownToLine, ArrowRight, ArrowUpRight, Check, Copy, Instagram, Linkedin, Link as LinkIcon, Mail, Phone, QrCode, Share2, X } from 'lucide-react';
 import './style.css';
 
 const API_BASE = (import.meta.env.VITE_API_BASE_URL || '').replace(/\/$/, '');
-const api = async (url, options={}) => { const response=await fetch(`${API_BASE}${url}`,{credentials:'same-origin',...options,headers:options.body instanceof FormData?options.headers:{'Content-Type':'application/json',...options.headers}}); const data=await response.json().catch(()=>({})); if(!response.ok) throw new Error(data.error||`Request failed (${response.status})`); return data; };
-const initials = name => name.split(' ').map(s=>s[0]).slice(0,2).join('').toUpperCase();
-const toastCopy = async (value,setNotice) => { try {await navigator.clipboard.writeText(value);setNotice('Copied to clipboard');}catch{setNotice('Copy unavailable in this browser');} setTimeout(()=>setNotice(''),2800); };
-
-function Logo() {return <a className="brand" href="/" aria-label="IEEE VJEC home"><img className="brand-logo" src="/ieee-vjec-logo.png" alt=""/><span>IEEE <strong>VJEC</strong></span></a>}
-function Button({children,className='',...props}) {return <button className={`btn ${className}`} {...props}>{children}</button>}
-function Avatar({profile,className=''}) {return profile.photo?<img className={`avatar ${className}`} src={profile.photo?.startsWith('/') && API_BASE ? `${API_BASE}${profile.photo}` : profile.photo} alt={profile.name} />:<div className={`avatar avatar-fallback ${className}`}>{initials(profile.name)}</div>}
-
-function App(){const path=window.location.pathname;return <PublicProfile slug={path.startsWith('/profile/')?decodeURIComponent(path.slice(9)):'arjun'}/>;}
-function PublicProfile({slug}){
- const [data,setData]=useState(null),[error,setError]=useState(''),[qrOpen,setQrOpen]=useState(false),[notice,setNotice]=useState('');
- useEffect(()=>{api(`/api/profiles/${encodeURIComponent(slug)}`).then(setData).catch(e=>setError(e.message));},[slug]);
- const p=data?.profile,url=data?.url;
- const downloadVcard=()=>{const esc=s=>String(s||'').replace(/\\/g,'\\\\').replace(/\n/g,'\\n').replace(/,/g,'\\,').replace(/;/g,'\\;');const v=`BEGIN:VCARD\r\nVERSION:3.0\r\nFN:${esc(p.name)}\r\nTITLE:${esc(p.designation)}\r\nORG:${esc(p.organization)}\r\nEMAIL:${esc(p.email)}\r\nTEL:${esc(p.phone)}\r\nURL:${url}\r\nEND:VCARD\r\n`;const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([v],{type:'text/vcard'}));a.download=`${p.slug}.vcf`;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);};
- const share=async()=>{if(navigator.share){try{await navigator.share({title:`${p.name} | ${p.organization}`,url});}catch{}}else toastCopy(url,setNotice)};
- return <div className="site public-site"><div className="top-strip"><span>THE PEOPLE BEHIND THE MOMENT</span><span className="strip-right">SCAN • CONNECT • GO</span></div><header className="site-header"><Logo/><div className="header-right"><span className="live-pill"><i/>DIGITAL IDENTITY</span></div></header>
- {error?<main className="not-found"><div className="error-num">404<span>.</span></div><h1>Profile not found.</h1><p>This profile may be inactive or the link has changed.</p><a className="btn btn-yellow" href="/">View demo profile <ArrowRight size={17}/></a></main>:!p?<main className="loading">LOADING PROFILE<span className="blink">_</span></main>:<>
- <main className="public-main"><div className="page-index"><span>01 / COORDINATOR PROFILE</span><span>OFFICIAL DIGITAL ID ↗</span></div><div className="profile-grid"><section className="identity-card"><div className="id-card-top"><span><span className="tiny-square"/> OFFICIAL COORDINATOR</span><span>NO. {String(p.id).padStart(4,'0')}</span></div><div className="photo-wrap"><Avatar profile={p}/></div><div className="identity-bottom"><span className="eyebrow">MEET YOUR COORDINATOR</span><h1>{p.name}<span>.</span></h1><div className="role-line"><span>{p.designation}</span><span className="role-arrow">↗</span></div><div className="id-meta"><div className="team-role-meta"><small>TEAM ROLE</small><strong>{p.team_role||'—'}</strong></div>{p.society&&<div className="society-meta"><small>SOCIETY</small><strong>{p.society}</strong></div>}{p.organization&&<div className="organization-meta"><small>ORGANIZATION</small><strong>{p.organization}</strong></div>}{p.department&&<div className="academic-meta"><small>ACADEMIC DEPARTMENT</small><strong>{p.department}</strong></div>}</div></div></section>
- <section className="info-column"><div className="intro-block"><div className="intro-tag"><Sparkles size={15}/> MORE THAN A NAME ON AN ID</div><h2>Hey there<span className="wave">✳</span><br/>let’s connect.</h2><p>{p.bio||`I'm ${p.name}, a coordinator at ${p.organization||'IEEE VJEC'}. Let's connect!`}</p><div className="scribble">GOOD PEOPLE. GREAT IDEAS. REAL CONNECTIONS.</div></div>
- <div className="action-grid"><Button className="btn-yellow action-primary" onClick={downloadVcard}><ArrowDownToLine size={21}/> Save contact <ArrowUpRight size={18}/></Button><Button className="btn-blue" onClick={share}><Share2 size={21}/> Share profile <ArrowUpRight size={18}/></Button><Button className="btn-white" onClick={()=>setQrOpen(true)}><QrCode size={21}/> Show QR code <ArrowUpRight size={18}/></Button><Button className="btn-white" onClick={()=>toastCopy(url,setNotice)}><Copy size={21}/> Copy profile URL <ArrowUpRight size={18}/></Button></div>
- {(p.instagram||p.linkedin||p.email||p.phone||p.links.length>0)&&<div className="connect-block"><div className="section-heading"><span>WAYS TO REACH ME</span><span>↘</span></div><div className="social-grid">{p.instagram&&<a className="social-link" href={p.instagram} target="_blank" rel="noreferrer"><Instagram size={23}/><span>Instagram</span><ArrowUpRight size={18}/></a>}{p.linkedin&&<a className="social-link" href={p.linkedin} target="_blank" rel="noreferrer"><Linkedin size={23}/><span>LinkedIn</span><ArrowUpRight size={18}/></a>}{p.email&&<a className="social-link" href={`mailto:${p.email}`}><Mail size={23}/><span>Email me</span><ArrowUpRight size={18}/></a>}{p.phone&&<a className="social-link" href={`tel:${p.phone.replace(/[^+\d]/g,'')}`}><Phone size={23}/><span>Call me</span><ArrowUpRight size={18}/></a>}{p.links.map((link,i)=><a key={i} className="social-link" href={link.url} target="_blank" rel="noreferrer"><LinkIcon size={23}/><span>{link.label}</span><ArrowUpRight size={18}/></a>)}</div></div>}</section></div><div className="profile-foot"><span>MADE TO BE SCANNED. BUILT TO CONNECT.</span><span>↗ IEEE VJEC / {new Date().getFullYear()}</span></div></main></>}
- <footer className="site-footer"><Logo/><span>PEOPLE MAKE THE EVENT.</span><span>© {new Date().getFullYear()} IEEE VJEC</span></footer>{notice&&<div className="toast"><Check size={16}/>{notice}</div>}{qrOpen&&p&&<div className="modal-overlay" onMouseDown={()=>setQrOpen(false)}><div className="qr-dialog" onMouseDown={e=>e.stopPropagation()}><button className="icon-button dialog-close" onClick={()=>setQrOpen(false)} aria-label="Close"><X/></button><div className="eyebrow">SCAN TO CONNECT / {p.name}</div><h2>{p.name}<span>.</span></h2><div className="qr-frame"><img src={`${API_BASE}/api/profiles/${encodeURIComponent(p.slug)}/qr`} alt={`QR code for ${p.name}`}/></div><p>Point your camera here to open this profile.</p><Button className="btn-yellow" onClick={()=>toastCopy(url,setNotice)}><Copy size={18}/> Copy URL</Button></div></div>}</div>;
+async function api(path) {
+  const response = await fetch(`${API_BASE}${path}`);
+  const data = await response.json().catch(() => ({}));
+  if (!response.ok) throw new Error(data.error || `Request failed (${response.status})`);
+  return data;
 }
-
-
-createRoot(document.getElementById('root')).render(<App/>);
+function Logo() {
+  return <a className="brand" href="/" aria-label="IEEE VJEC home"><span className="brand-mark"><img src="/ieee-vjec-logo.png" alt="" /></span><span className="brand-text">IEEE <strong>VJEC</strong><small>Student Branch</small></span></a>;
+}
+function Avatar({ profile }) {
+  if (profile.photo) {
+    const src = profile.photo.startsWith('/') && API_BASE ? `${API_BASE}${profile.photo}` : profile.photo;
+    return <img className="portrait" src={src} alt={profile.name} />;
+  }
+  const initials = profile.name.split(' ').map(part => part[0]).slice(0, 2).join('').toUpperCase();
+  return <div className="portrait portrait-fallback" aria-label={profile.name}>{initials}</div>;
+}
+function PublicProfile({ slug }) {
+  const [data, setData] = useState(null);
+  const [error, setError] = useState('');
+  const [qrOpen, setQrOpen] = useState(false);
+  const [notice, setNotice] = useState('');
+  useEffect(() => {
+    let current = true;
+    api(`/api/profiles/${encodeURIComponent(slug)}`).then(result => { if (current) setData(result); }).catch(err => { if (current) setError(err.message); });
+    return () => { current = false; };
+  }, [slug]);
+  useEffect(() => {
+    if (!qrOpen) return;
+    const onEscape = event => { if (event.key === 'Escape') setQrOpen(false); };
+    window.addEventListener('keydown', onEscape);
+    return () => window.removeEventListener('keydown', onEscape);
+  }, [qrOpen]);
+  const profile = data?.profile;
+  const url = data?.url;
+  const copyUrl = async () => {
+    try { await navigator.clipboard.writeText(url); setNotice('Profile link copied'); }
+    catch { setNotice('Copy unavailable in this browser'); }
+    setTimeout(() => setNotice(''), 2800);
+  };
+  const share = async () => {
+    if (navigator.share) { try { await navigator.share({ title: `${profile.name} | ${profile.organization}`, url }); } catch { /* Sharing was cancelled. */ } }
+    else copyUrl();
+  };
+  const downloadVcard = () => {
+    const escape = value => String(value || '').replace(/\\/g, '\\\\').replace(/\n/g, '\\n').replace(/,/g, '\\,').replace(/;/g, '\\;');
+    const vcard = `BEGIN:VCARD\r\nVERSION:3.0\r\nFN:${escape(profile.name)}\r\nTITLE:${escape(profile.designation)}\r\nORG:${escape(profile.organization)}\r\nEMAIL:${escape(profile.email)}\r\nTEL:${escape(profile.phone)}\r\nURL:${url}\r\nEND:VCARD\r\n`;
+    const blobUrl = URL.createObjectURL(new Blob([vcard], { type: 'text/vcard' }));
+    const anchor = document.createElement('a');
+    anchor.href = blobUrl;
+    anchor.download = `${profile.slug}.vcf`;
+    anchor.click();
+    setTimeout(() => URL.revokeObjectURL(blobUrl), 1000);
+  };
+  const links = profile ? [
+    profile.instagram && { label: 'Instagram', href: profile.instagram, icon: Instagram, external: true },
+    profile.linkedin && { label: 'LinkedIn', href: profile.linkedin, icon: Linkedin, external: true },
+    profile.email && { label: 'Email', href: `mailto:${profile.email}`, icon: Mail },
+    profile.phone && { label: 'Phone', href: `tel:${profile.phone.replace(/[^+\d]/g, '')}`, icon: Phone },
+    ...(profile.links || []).map(link => ({ label: link.label, href: link.url, icon: LinkIcon, external: true })),
+  ].filter(Boolean) : [];
+  return <div className="site">
+    <header className="site-header"><div className="shell header-inner"><Logo /><div className="header-label"><span className="status-dot" /> OFFICIAL COORDINATOR PROFILE</div></div></header>
+    {error ? <main className="state-page shell"><span className="section-kicker">PROFILE UNAVAILABLE</span><h1>Profile not found.</h1><p>This profile may be inactive or the link may have changed.</p><a className="button button-primary" href="/">Return to home <ArrowRight size={18} /></a></main>
+      : !profile ? <main className="state-page shell" aria-live="polite"><span className="loading-indicator" />Loading coordinator profile…</main>
+        : <main className="shell profile-page">
+          <div className="page-heading"><span>IEEE VJEC / PEOPLE DIRECTORY</span><span>PROFILE {String(profile.id).padStart(4, '0')}</span></div>
+          <div className="hero">
+            <section className="hero-content">
+              <div className="identity-label"><span className="status-dot" /> OFFICIAL COORDINATOR PROFILE</div>
+              <p className="eyebrow">MEET THE PERSON BEHIND THE ID</p>
+              <h1>{profile.name}</h1>
+              <p className="designation">{profile.designation}</p>
+              <p className="bio">{profile.bio || `${profile.name} is a coordinator at ${profile.organization || 'IEEE VJEC'}.`}</p>
+              <div className="primary-actions"><button className="button button-primary" onClick={downloadVcard}><ArrowDownToLine size={18} /> Save contact</button><button className="button button-outline" onClick={() => setQrOpen(true)}><QrCode size={18} /> View QR code</button></div>
+              <div className="utility-actions"><button onClick={share}><Share2 size={16} /> Share profile</button><span aria-hidden="true" /><button onClick={copyUrl}><Copy size={16} /> Copy profile link</button></div>
+            </section>
+            <div className="portrait-panel"><div className="portrait-frame"><Avatar profile={profile} /></div><div className="portrait-caption"><span>IEEE VJEC</span><span>COORDINATOR ID · {String(profile.id).padStart(4, '0')}</span></div></div>
+          </div>
+          <section className="details-section" aria-labelledby="details-title">
+            <div className="section-heading"><div><span className="section-kicker">PROFILE DETAILS</span><h2 id="details-title">At a glance</h2></div><span className="section-rule" /></div>
+            <div className="details-grid">
+              {profile.organization && <div className="detail"><span>ORGANIZATION</span><strong>{profile.organization}</strong></div>}
+              {profile.society && <div className="detail"><span>SOCIETY</span><strong>{profile.society}</strong></div>}
+              {profile.team_role && <div className="detail"><span>TEAM ROLE</span><strong>{profile.team_role}</strong></div>}
+              {profile.department && <div className="detail"><span>ACADEMIC DEPARTMENT</span><strong>{profile.department}</strong></div>}
+            </div>
+          </section>
+          {links.length > 0 && <section className="connect-section" aria-labelledby="connect-title">
+            <div className="section-heading"><div><span className="section-kicker">GET IN TOUCH</span><h2 id="connect-title">Connect with {profile.name.split(' ')[0]}</h2></div><span className="section-rule" /></div>
+            <div className="links-grid">{links.map(({ label, href, icon: Icon, external }, index) => <a className="contact-link" href={href} key={`${label}-${index}`} target={external ? '_blank' : undefined} rel={external ? 'noreferrer' : undefined}><span className="link-icon"><Icon size={21} /></span><span>{label}</span><ArrowUpRight className="link-arrow" size={18} /></a>)}</div>
+          </section>}
+          <div className="closing-note"><span className="closing-mark" />This digital profile is linked to an IEEE VJEC coordinator ID card.</div>
+        </main>}
+    <footer className="site-footer"><div className="shell footer-inner"><Logo /><p>IEEE VJEC Student Branch<br /><span>Connect with the people behind the work.</span></p><span>© {new Date().getFullYear()} IEEE VJEC</span></div></footer>
+    {notice && <div className="toast" role="status"><Check size={17} />{notice}</div>}
+    {qrOpen && profile && <div className="modal-overlay" onMouseDown={() => setQrOpen(false)}><div className="qr-dialog" role="dialog" aria-modal="true" aria-label={`QR code for ${profile.name}`} onMouseDown={event => event.stopPropagation()}><button className="dialog-close" onClick={() => setQrOpen(false)} aria-label="Close"><X size={20} /></button><span className="section-kicker">SCAN TO CONNECT / {profile.name}</span><h2>{profile.name}</h2><div className="qr-frame"><img src={`${API_BASE}/api/profiles/${encodeURIComponent(profile.slug)}/qr`} alt={`QR code for ${profile.name}`} /></div><p>Scan this code to open the coordinator profile.</p><button className="button button-primary" onClick={copyUrl}><Copy size={18} /> Copy profile link</button></div></div>}
+  </div>;
+}
+const slug = window.location.pathname.startsWith('/profile/') ? decodeURIComponent(window.location.pathname.slice(9)) : 'arjun';
+createRoot(document.getElementById('root')).render(<PublicProfile slug={slug} />);
