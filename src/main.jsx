@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { createRoot } from 'react-dom/client';
-import { ArrowDownToLine, ArrowLeft, ArrowRight, ArrowUpRight, Check, ChevronLeft, ChevronRight, Copy, Download, ExternalLink, Filter, Instagram, Linkedin, Link as LinkIcon, LogOut, Mail, Menu, MoreHorizontal, Phone, Plus, QrCode, Search, Share2, Shield, Sparkles, Trash2, UserRound, X } from 'lucide-react';
+import { ArrowDownToLine, ArrowRight, ArrowUpRight, Check, Copy, Instagram, Linkedin, Link as LinkIcon, Mail, Phone, QrCode, Share2, Sparkles, X } from 'lucide-react';
 import './style.css';
 
 const API_BASE = (import.meta.env.VITE_API_BASE_URL || '').replace(/\/$/, '');
 const api = async (url, options={}) => { const response=await fetch(`${API_BASE}${url}`,{credentials:'same-origin',...options,headers:options.body instanceof FormData?options.headers:{'Content-Type':'application/json',...options.headers}}); const data=await response.json().catch(()=>({})); if(!response.ok) throw new Error(data.error||`Request failed (${response.status})`); return data; };
-const slugify = value => value.toLowerCase().normalize('NFKD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
-const blank = {name:'',slug:'',designation:'',department:'',team_role:'',society:'',bio:'',organization:'',event:'',email:'',phone:'',instagram:'',linkedin:'',links:[],status:'active'};
 const initials = name => name.split(' ').map(s=>s[0]).slice(0,2).join('').toUpperCase();
 const toastCopy = async (value,setNotice) => { try {await navigator.clipboard.writeText(value);setNotice('Copied to clipboard');}catch{setNotice('Copy unavailable in this browser');} setTimeout(()=>setNotice(''),2800); };
 
