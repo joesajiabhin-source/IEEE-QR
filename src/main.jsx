@@ -25,6 +25,7 @@ function PublicProfile({ slug }) {
   const [qrOpen, setQrOpen] = useState(false);
   const [notice, setNotice] = useState('');
   const aboutRef = useRef(null);
+  const heroRef = useRef(null);
   useEffect(() => {
     let current = true;
     api(`/api/profiles/${encodeURIComponent(slug)}`).then(result => { if (current) setData(result); }).catch(err => { if (current) setError(err.message); });
@@ -49,6 +50,33 @@ function PublicProfile({ slug }) {
     window.addEventListener('keydown', onEscape);
     return () => window.removeEventListener('keydown', onEscape);
   }, [qrOpen]);
+  useEffect(() => {
+    const hero = heroRef.current;
+    if (!hero || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    let frame = 0;
+    let target = 0;
+    let current = 0;
+    const animate = () => {
+      current += (target - current) * 0.14;
+      if (Math.abs(target - current) < 0.002) current = target;
+      hero.style.setProperty('--type-rise', `${Math.round(-155 * current)}px`);
+      hero.style.setProperty('--type-scale', String(1 - 0.12 * current));
+      hero.style.setProperty('--type-opacity', String(1 - 0.62 * current));
+      hero.style.setProperty('--person-rise', `${Math.round(-78 * current)}px`);
+      hero.style.setProperty('--person-scale', String(1 - 0.035 * current));
+      hero.style.setProperty('--cue-opacity', String(1 - current));
+      frame = current === target ? 0 : requestAnimationFrame(animate);
+    };
+    const update = () => {
+      const travel = Math.max(1, hero.offsetHeight - window.innerHeight);
+      target = Math.min(1, Math.max(0, -hero.getBoundingClientRect().top / travel));
+      if (!frame) frame = requestAnimationFrame(animate);
+    };
+    window.addEventListener('scroll', update, { passive: true });
+    window.addEventListener('resize', update);
+    update();
+    return () => { window.removeEventListener('scroll', update); window.removeEventListener('resize', update); cancelAnimationFrame(frame); };
+  }, [error]);
 
   const profile = data?.profile;
   const url = data?.url;
@@ -83,12 +111,12 @@ function PublicProfile({ slug }) {
     <header className="site-header"><div className="shell header-inner"><Logo /><span className="header-label">COORDINATOR PROFILE <span className="header-dot" /></span></div></header>
     {error ? <main className="state-page shell"><span className="eyebrow">PROFILE UNAVAILABLE</span><h1>Profile not found.</h1><p>This profile may be inactive or the link may have changed.</p></main>
       : <main>
-          <section className="hero-stage" aria-label="IEEE coordinator profile introduction">
+          <section className="hero-stage" ref={heroRef} aria-label="IEEE coordinator profile introduction">
             <div className="hero-glow" aria-hidden="true" />
             <div className="hero-inner">
               <p className="hero-caption">IEEE STUDENT BRANCH · VJEC</p>
-              <h1 className="hero-word" aria-label="IEEE"><span aria-hidden="true">I</span><span aria-hidden="true">E</span><span aria-hidden="true">E</span><span aria-hidden="true">E</span></h1>
-              {(profile || slug === 'arjun') && <Portrait profile={profile || { slug, name: '', photo: null }} />}
+              <div className="hero-type-motion"><h1 className="hero-word" aria-label="IEEE"><span aria-hidden="true">I</span><span aria-hidden="true">E</span><span aria-hidden="true">E</span><span aria-hidden="true">E</span></h1></div>
+              <div className="portrait-motion">{(profile || slug === 'arjun') && <Portrait profile={profile || { slug, name: '', photo: null }} />}</div>
               <div className="hero-bottom"><a href="#sb-vjec" className="scroll-cue">SCROLL TO EXPLORE <ArrowDown size={15} /></a>{profile && <span>COORDINATOR ID · {String(profile.id).padStart(4, '0')}</span>}</div>
             </div>
           </section>
