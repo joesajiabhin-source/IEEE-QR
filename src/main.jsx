@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import { ArrowDown, ArrowDownToLine, ArrowUpRight, Check, Copy, Instagram, Linkedin, Link as LinkIcon, Mail, Phone, QrCode, Share2, X, Youtube } from 'lucide-react';
-import './style.css';
+import './minimal.css';
 
 const API_BASE = (import.meta.env.VITE_API_BASE_URL || '').replace(/\/$/, '');
 async function api(path) {
@@ -25,7 +25,6 @@ function PublicProfile({ slug }) {
   const [qrOpen, setQrOpen] = useState(false);
   const [notice, setNotice] = useState('');
   const aboutRef = useRef(null);
-  const heroRef = useRef(null);
   useEffect(() => {
     let current = true;
     api(`/api/profiles/${encodeURIComponent(slug)}`).then(result => { if (current) setData(result); }).catch(err => { if (current) setError(err.message); });
@@ -50,34 +49,6 @@ function PublicProfile({ slug }) {
     window.addEventListener('keydown', onEscape);
     return () => window.removeEventListener('keydown', onEscape);
   }, [qrOpen]);
-  useEffect(() => {
-    const hero = heroRef.current;
-    if (!hero || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    let frame = 0;
-    let target = 0;
-    let current = 0;
-    const animate = () => {
-      current += (target - current) * 0.14;
-      if (Math.abs(target - current) < 0.002) current = target;
-      hero.style.setProperty('--type-rise', `${Math.round(-155 * current)}px`);
-      hero.style.setProperty('--type-scale', String(1 - 0.12 * current));
-      hero.style.setProperty('--type-opacity', String(1 - 0.62 * current));
-      hero.style.setProperty('--person-rise', `${Math.round(-78 * current)}px`);
-      hero.style.setProperty('--person-scale', String(1 - 0.035 * current));
-      hero.style.setProperty('--cue-opacity', String(1 - current));
-      frame = current === target ? 0 : requestAnimationFrame(animate);
-    };
-    const update = () => {
-      const travel = Math.max(1, hero.offsetHeight - window.innerHeight);
-      target = Math.min(1, Math.max(0, -hero.getBoundingClientRect().top / travel));
-      if (!frame) frame = requestAnimationFrame(animate);
-    };
-    window.addEventListener('scroll', update, { passive: true });
-    window.addEventListener('resize', update);
-    update();
-    return () => { window.removeEventListener('scroll', update); window.removeEventListener('resize', update); cancelAnimationFrame(frame); };
-  }, [error]);
-
   const profile = data?.profile;
   const url = data?.url;
   const copyUrl = async () => {
@@ -111,30 +82,31 @@ function PublicProfile({ slug }) {
     <header className="site-header"><div className="shell header-inner"><Logo /><span className="header-label">COORDINATOR PROFILE <span className="header-dot" /></span></div></header>
     {error ? <main className="state-page shell"><span className="eyebrow">PROFILE UNAVAILABLE</span><h1>Profile not found.</h1><p>This profile may be inactive or the link may have changed.</p></main>
       : <main>
-          <section className="hero-stage" ref={heroRef} aria-label="IEEE coordinator profile introduction">
-            <div className="hero-glow" aria-hidden="true" />
-            <div className="hero-grid-pattern" aria-hidden="true" />
-            <div className="hero-inner">
-              <p className="hero-caption">IEEE STUDENT BRANCH · VJEC</p>
-              <div className="hero-edition" aria-hidden="true"><span>OFFICIAL</span><strong>PEOPLE<br />OF IEEE</strong><span>VOLUME 001 / VJEC</span></div>
-              <div className="hero-orbit" aria-hidden="true"><span>VJEC</span><span>IEEE</span><span>STUDENT BRANCH</span></div>
-              <div className="hero-type-motion"><h1 className="hero-word" aria-label="IEEE"><span aria-hidden="true">I</span><span aria-hidden="true">E</span><span aria-hidden="true">E</span><span aria-hidden="true">E</span></h1></div>
-              <div className="portrait-motion">{(profile || slug === 'arjun') && <Portrait profile={profile || { slug, name: '', photo: null }} />}</div>
-              {profile && <div className="hero-nameplate"><span>IDENTITY / {String(profile.id).padStart(4, '0')}</span><strong>{profile.name}</strong><em>{profile.designation}</em></div>}
-              <div className="hero-seal" aria-hidden="true"><span>MEET THE<br />PEOPLE</span><strong>↗</strong></div>
-              <div className="hero-side-type" aria-hidden="true">IDEAS IN MOTION — PEOPLE IN FOCUS</div>
-              <div className="hero-bottom"><a href="#sb-vjec" className="scroll-cue">SCROLL TO EXPLORE <ArrowDown size={15} /></a>{profile && <span>COORDINATOR ID · {String(profile.id).padStart(4, '0')}</span>}</div>
+          <section className="hero-stage" aria-label="IEEE coordinator profile introduction">
+            <div className="shell hero-inner">
+              <div className="hero-copy">
+                <p className="eyebrow hero-caption">IEEE STUDENT BRANCH · VJEC</p>
+                <span className="hero-rule" aria-hidden="true" />
+                <p className="hero-intro-label">Coordinator profile</p>
+                <h1>{profile?.name || 'Coordinator'}</h1>
+                {profile && <><p className="hero-role">{profile.designation}{profile.team_role ? ` · ${profile.team_role}` : ''}</p><p className="hero-affiliation">{profile.organization || 'IEEE SB VJEC'}{profile.society ? ` / ${profile.society}` : ''}</p></>}
+                <div className="hero-actions"><a className="primary-action" href="#sb-vjec">View profile <ArrowDown size={18} /></a>{profile && <button className="quiet-action" onClick={downloadVcard}>Save contact <ArrowDownToLine size={18} /></button>}</div>
+                {profile && <p className="hero-number">COORDINATOR ID&nbsp; {String(profile.id).padStart(4, '0')}</p>}
+              </div>
+              <div className="hero-visual">
+                <span className="portrait-watermark" aria-hidden="true">IEEE</span>
+                {(profile || slug === 'arjun') && <Portrait profile={profile || { slug, name: '', photo: null }} />}
+                <div className="visual-caption"><span>IEEE SB VJEC</span><span>PEOPLE BEHIND THE BRANCH</span></div>
+              </div>
             </div>
           </section>
 
           {profile ? <section className="about-section" id="sb-vjec" ref={aboutRef} aria-labelledby="branch-heading">
-            <div className="marquee" aria-hidden="true"><div>IEEE SB VJEC <span>✳</span> PEOPLE MAKE THE BRANCH <span>✳</span> IEEE SB VJEC <span>✳</span> PEOPLE MAKE THE BRANCH <span>✳</span></div></div>
             <div className="shell">
-              <p className="eyebrow about-kicker">IEEE STUDENT BRANCH · VIMAL JYOTHI ENGINEERING COLLEGE</p>
-              <h2 className="branch-heading" id="branch-heading">SB VJEC<span>.</span></h2>
-              <div className="section-stamp" aria-hidden="true">CONNECTED<br />BY DESIGN <span>✳</span></div>
+              <p className="eyebrow about-kicker">IEEE SB VJEC / PEOPLE</p>
+              <h2 className="branch-heading" id="branch-heading">Profile &amp; contact</h2>
               <div className="branch-grid">
-                <div className="branch-intro"><p className="branch-note">The person behind the ID</p><h3>{profile.name}</h3><p className="branch-role">{profile.designation}{profile.team_role ? ` · ${profile.team_role}` : ''}</p><p className="branch-bio">{profile.bio || `${profile.name} is a coordinator at ${profile.organization || 'IEEE SB VJEC'}.`}</p><span className="intro-asterisk" aria-hidden="true">✳</span></div>
+                <div className="branch-intro"><p className="branch-note">ABOUT</p><h3>{profile.name}</h3><p className="branch-role">{profile.designation}{profile.team_role ? ` · ${profile.team_role}` : ''}</p><p className="branch-bio">{profile.bio || `${profile.name} is a coordinator at ${profile.organization || 'IEEE SB VJEC'}.`}</p></div>
                 <div className="accounts-panel"><div className="panel-label"><span>CONNECT ONLINE</span><span>{String(accounts.length).padStart(2, '0')} ACCOUNTS</span></div>{accounts.length ? <div className="account-list">{accounts.map(({ label, href, icon: Icon }, index) => <a className="account-link" key={`${label}-${index}`} href={href} target="_blank" rel="noreferrer" style={{ '--index': index }}><span className="account-icon"><Icon size={22} /></span><span>{label}</span><ArrowUpRight className="account-arrow" size={20} /></a>)}</div> : <p className="empty-accounts">Official account links will appear here when added.</p>}</div>
               </div>
               <div className="profile-details"><div><span>ORGANIZATION</span><strong>{profile.organization || 'IEEE SB VJEC'}</strong></div>{profile.society && <div><span>SOCIETY</span><strong>{profile.society}</strong></div>}{profile.department && <div><span>ACADEMIC DEPARTMENT</span><strong>{profile.department}</strong></div>}</div>
