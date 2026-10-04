@@ -12,7 +12,7 @@ async function api(path) {
   return data;
 }
 function Logo({ official = false }) {
-  return <a className={`brand${official ? ' brand-official' : ''}`} href="/" aria-label={official ? 'IEEE' : 'IEEE VJEC home'}><span className="brand-mark"><img src={official ? '/ieee-official-logo.png' : '/ieee-vjec-logo.png'} alt="" /></span>{!official && <span className="brand-text">IEEE <strong>VJEC</strong><small>Student Branch</small></span>}</a>;
+  return <a className={`brand${official ? ' brand-official' : ''}`} href="/" aria-label={official ? 'IEEE' : 'IEEE SB VJEC home'}><span className="brand-mark"><img src={official ? '/ieee-official-logo-transparent.png' : '/ieee-vjec-logo.png'} alt="" /></span>{!official && <span className="brand-text">IEEE <strong>SB VJEC</strong></span>}</a>;
 }
 function Portrait({ profile }) {
   const isReferencePortrait = profile.slug === 'arjun';
@@ -34,9 +34,9 @@ function PanelCutout({ slug }) {
     observer.observe(panel);
     return () => observer.disconnect();
   }, []);
-  const fontSize = Math.min(300, size.width * .28, size.height * .48);
-  const textLength = Math.min(size.width * .69, fontSize * 6.2);
   const mobile = window.matchMedia('(max-width: 650px)').matches;
+  const fontSize = mobile ? Math.min(400, size.width * .72, size.height * .76) : Math.min(300, size.width * .28, size.height * .48);
+  const textLength = mobile ? size.width * .82 : Math.min(size.width * .69, fontSize * 6.2);
   const curve = mobile ? .08 : .11;
   const textBaseline = size.height * (mobile ? .58 : .72);
   const maskId = `banner-cut-${slug.replace(/[^a-z0-9_-]/gi, '')}`;
@@ -77,8 +77,7 @@ function PublicProfile({ slug }) {
     const clamp = value => Math.min(1, Math.max(0, value));
     const reveal = (progress, start, end) => clamp((progress - start) / (end - start));
     const paint = () => {
-      current += (target - current) * .16;
-      if (Math.abs(target - current) < .001) current = target;
+      current = target;
       const setMotion = (element, value) => {
         if (!element) return;
         element.style.setProperty('--enter-opacity', value.toFixed(3));
@@ -117,15 +116,12 @@ function PublicProfile({ slug }) {
     let frame = 0;
     let current = 0;
     let target = 0;
-    let velocity = 0;
     const paint = () => {
-      velocity = (velocity + (target - current) * 0.035) * 0.74;
-      current = Math.min(1, Math.max(0, current + velocity));
-      if (Math.abs(target - current) < 0.0015 && Math.abs(velocity) < 0.0015) { current = target; velocity = 0; }
+      current = target;
       const sceneHeight = hero.querySelector('.hero-inner').clientHeight;
-      const settleProgress = Math.min(1, current / .5);
-      const mobileScene = window.matchMedia('(max-width: 650px)').matches;
-      const exitStart = mobileScene ? .82 : .7;
+      const smooth = value => { const t = Math.min(1, Math.max(0, value)); return t * t * (3 - 2 * t); };
+      const settleProgress = smooth(current / .5);
+      const exitStart = .64;
       const exitProgress = Math.min(1, Math.max(0, (current - exitStart) / (1 - exitStart)));
       hero.style.setProperty('--type-y', `${Math.round(-95 * current - sceneHeight * exitProgress)}px`);
       hero.style.setProperty('--person-y', `${Math.round(-42 * current - sceneHeight * exitProgress)}px`);
@@ -133,9 +129,9 @@ function PublicProfile({ slug }) {
       const introEase = introProgress * introProgress * (3 - 2 * introProgress);
       hero.style.setProperty('--intro-opacity', String(1 - introEase));
       hero.style.setProperty('--panel-rise', `${Math.round(sceneHeight * (.68 * settleProgress + exitProgress))}px`);
-      const easedReveal = settleProgress >= .985 ? 1 : 0;
-      hero.style.setProperty('--cutout-reveal', String(easedReveal));
-      hero.style.setProperty('--cutout-rise', `${Math.round(hero.querySelector('.hero-inner').clientHeight * .14 * (1 - easedReveal))}px`);
+      const cutoutReveal = smooth((current - .34) / .16);
+      hero.style.setProperty('--cutout-reveal', String(cutoutReveal));
+      hero.style.setProperty('--cutout-rise', `${Math.round(sceneHeight * .14 * (1 - cutoutReveal))}px`);
       frame = current === target ? 0 : requestAnimationFrame(paint);
     };
     const update = () => {
@@ -183,14 +179,13 @@ function PublicProfile({ slug }) {
           <section className="hero-stage" ref={heroRef} aria-label="IEEE coordinator profile introduction">
             <div className="hero-beams" aria-hidden="true" />
             <div className="hero-inner">
-              {profile && <div className="hero-intro" aria-hidden="true"><span>COORDINATOR PROFILE / {String(profile.id).padStart(4, '0')}</span><h1>{profile.name}</h1><p>{profile.designation}{profile.team_role ? ` · ${profile.team_role}` : ''}</p></div>}
+              {profile && <div className="hero-intro" aria-hidden="true"><h1>{profile.name}</h1><p>{profile.designation}{profile.team_role ? ` · ${profile.team_role}` : ''}</p></div>}
               <div className="hero-type-motion"><div className="hero-word" aria-hidden="true"><span>I</span><span>E</span><span>E</span><span>E</span></div></div>
               <div className="portrait-motion">{(profile || slug === 'arjun') && <Portrait profile={profile || { slug, name: '', photo: null }} />}</div>
               <div className="rising-panel">
               <PanelCutout slug={slug} />
               <div className="banner-content">
-                <div><span className="banner-kicker">COORDINATOR PROFILE{profile ? ` / ${String(profile.id).padStart(4, '0')}` : ''}</span><h1>{profile?.name || 'Coordinator'}</h1>{profile && <span className="banner-role">{profile.designation}{profile.team_role ? ` · ${profile.team_role}` : ''}</span>}</div>
-                <span className="banner-scroll">Scroll to connect <ArrowDown size={18} /></span>
+                <span className="banner-scroll"><span>Scroll to connect</span><ArrowDown size={18} /></span>
               </div>
               </div>
             </div>
@@ -200,13 +195,13 @@ function PublicProfile({ slug }) {
             <div className="shell">
               <p className="eyebrow about-kicker">CONNECT WITH {profile.name}</p>
               <h2 className="branch-heading" id="branch-heading">Find me online<span>.</span></h2>
-              <div className="social-grid">{accounts.map(({ label, href, icon: Icon }, index) => <a className="social-card" key={`${label}-${index}`} href={href} target="_blank" rel="noreferrer" style={{ '--card-index': index }}><span className="social-card-icon"><Icon size={28} /></span><span className="social-card-name">{label}</span><ArrowUpRight size={25} /></a>)}</div>
+              <div className="social-grid">{accounts.map(({ label, href, icon: Icon }, index) => <a className="social-card" key={`${label}-${index}`} href={href} target="_blank" rel="noreferrer" data-index={String(index + 1).padStart(2, '0')} style={{ '--card-index': index }}><span className="social-card-icon"><Icon size={28} /></span><span className="social-card-name">{label}</span><ArrowUpRight size={25} /></a>)}</div>
               {!accounts.length && <p className="empty-accounts">Account links will appear here when added.</p>}
               <div className="profile-actions"><button onClick={downloadVcard}><ArrowDownToLine size={18} /> Save contact</button><button onClick={share}><Share2 size={18} /> Share profile</button><button onClick={() => setQrOpen(true)}><QrCode size={18} /> Show QR code</button><button onClick={copyUrl}><Copy size={18} /> Copy profile link</button>{contactLinks.map(({ label, href, icon: Icon }) => <a key={label} href={href}><Icon size={18} /> {label}</a>)}</div>
             </div>
           </section> : <section className="loading-profile shell" aria-live="polite">Loading coordinator details…</section>}
         </main>}
-    <footer className="site-footer"><div className="shell footer-inner"><Logo official /><span>IEEE · {new Date().getFullYear()}</span></div></footer>
+    <footer className="site-footer"><div className="shell footer-inner"><Logo official /></div></footer>
     {notice && <div className="toast" role="status"><Check size={17} />{notice}</div>}
     {qrOpen && profile && <div className="modal-overlay" onMouseDown={() => setQrOpen(false)}><div className="qr-dialog" role="dialog" aria-modal="true" aria-label={`QR code for ${profile.name}`} onMouseDown={event => event.stopPropagation()}><button className="dialog-close" onClick={() => setQrOpen(false)} aria-label="Close"><X size={20} /></button><span className="eyebrow">SCAN TO CONNECT / {profile.name}</span><h2>{profile.name}</h2><div className="qr-frame"><img src={`${API_BASE}/api/profiles/${encodeURIComponent(profile.slug)}/qr`} alt={`QR code for ${profile.name}`} /></div><p>Scan this code to open the coordinator profile.</p><button className="modal-copy" onClick={copyUrl}><Copy size={18} /> Copy profile link</button></div></div>}
   </div>;
