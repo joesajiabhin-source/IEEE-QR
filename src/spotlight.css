@@ -153,3 +153,7 @@ html,body{height:auto;overflow-x:hidden;overflow-y:auto}
 html{scroll-snap-type:none}.hero-stage{scroll-snap-align:none;scroll-snap-stop:normal}
 @media(max-width:650px){.hero-stage{height:148svh!important}.hero-inner{height:100svh!important}.rising-panel{top:58%;height:100%}}
 @media(prefers-reduced-motion:reduce){.hero-stage{height:100svh!important}.hero-inner{position:relative!important}.rising-panel{position:absolute!important;top:0!important;height:100%!important;transform:none!important}}
+
+/* Anchor the expanding banner to the bottom edge as it rises. */
+.rising-panel{height:calc(45% + var(--panel-rise,0px))}
+@media(max-width:650px){.rising-panel{height:calc(42% + var(--panel-rise,0px))}}

@@ -120,7 +120,8 @@ function PublicProfile({ slug }) {
     const paint = () => {
       const sceneHeight = hero.querySelector('.hero-inner')?.clientHeight || window.innerHeight;
       const eased = smooth(progress);
-      hero.style.setProperty('--panel-rise', `${Math.round(sceneHeight * .55 * eased)}px`);
+      const panelTravel = window.matchMedia('(max-width: 650px)').matches ? .58 : .55;
+      hero.style.setProperty('--panel-rise', `${Math.round(sceneHeight * panelTravel * eased)}px`);
       hero.style.setProperty('--type-y', `${Math.round(-70 * eased)}px`);
       hero.style.setProperty('--person-y', `${Math.round(-25 * eased)}px`);
       const reveal = smooth((progress - .08) / .55);
