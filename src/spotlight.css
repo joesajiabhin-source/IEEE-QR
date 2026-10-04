@@ -165,3 +165,13 @@ html{scroll-snap-type:none}.hero-stage{scroll-snap-align:none;scroll-snap-stop:n
 /* Keep panel sizing in the same coordinate space as the sticky hero. */
 .rising-panel{top:55%;height:calc(45% + var(--panel-rise,0px))}
 @media(max-width:650px){.rising-panel{top:58%;height:calc(42% + var(--panel-rise,0px))}}
+
+/* Show the banner as a full-screen, fixed view without requiring scrolling. */
+html,body{height:100%;overflow:hidden}
+.site{height:100svh;min-height:0;overflow:hidden}
+.hero-stage{height:100svh!important;min-height:0!important;overflow:hidden}
+.hero-inner{position:relative!important;top:auto!important;height:100svh!important;min-height:0!important;overflow:hidden!important}
+.rising-panel{top:0!important;bottom:0!important;left:0!important;width:100%!important;height:100%!important;transform:none!important;border-radius:0!important}
+.rising-panel:before{opacity:1!important;transform:none!important}
+.hero-intro,.banner-scroll{display:none!important}
+@media(prefers-reduced-motion:reduce){.hero-stage{height:100svh!important}.hero-inner{position:relative!important;height:100svh!important}.rising-panel{position:absolute!important;top:0!important;height:100%!important;margin:0!important}}
