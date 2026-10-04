@@ -139,3 +139,6 @@
 /* Keep the blue hero and social links as consecutive scroll stops. */
 html{scroll-snap-type:y mandatory}
 .hero-stage,.about-section{scroll-snap-align:start;scroll-snap-stop:always}
+/* Expand the blue banner to the hero bottom and keep the links section flush below. */
+.rising-panel{top:43%;bottom:0;height:auto}
+@media(max-width:650px){.rising-panel{top:48%;bottom:0;height:auto}}
