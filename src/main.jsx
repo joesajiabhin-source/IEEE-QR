@@ -118,7 +118,7 @@ function PublicProfile({ slug }) {
     const clamp = value => Math.min(1, Math.max(0, value));
     const smooth = value => { const t = clamp(value); return t * t * (3 - 2 * t); };
     const paint = () => {
-      const sceneHeight = hero.querySelector('.hero-inner')?.clientHeight || window.innerHeight;
+      const sceneHeight = window.innerHeight;
       const eased = smooth(progress);
       const panelTravel = window.matchMedia('(max-width: 650px)').matches ? .58 : .55;
       hero.style.setProperty('--panel-rise', `${Math.round(sceneHeight * panelTravel * eased)}px`);
@@ -133,7 +133,7 @@ function PublicProfile({ slug }) {
     const update = () => {
       const inner = hero.querySelector('.hero-inner');
       if (!inner) return;
-      progress = clamp(-hero.getBoundingClientRect().top / Math.max(1, hero.offsetHeight - inner.clientHeight));
+      progress = clamp(-hero.getBoundingClientRect().top / Math.max(1, hero.offsetHeight - window.innerHeight));
       if (!frame) frame = requestAnimationFrame(paint);
     };
     window.addEventListener('scroll', update, { passive: true });
