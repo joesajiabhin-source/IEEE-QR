@@ -101,3 +101,25 @@
 @media(max-width:650px){.hero-inner{min-height:600px}.hero-word{top:44%;font-size:37vw;transform:translate(-50%,-50%) scaleY(2.45)}.hero-person.cutout{width:120vw;height:81%;bottom:5%}.hero-caption{top:80px}.rising-panel{border-radius:50% 50% 0 0/8% 8% 0 0}.banner-content{width:70%;padding-top:6svh;gap:8px}.banner-content>div:first-child{flex-basis:100%}.banner-content h1{font-size:29px}.banner-scroll{margin:2px 0 0;padding:4px 0}.banner-social{margin-top:17px}.banner-social .account-link{min-height:58px}.banner-role{font-size:10px}.about-section{padding:28px 0 38px}.branch-heading{font-size:32px;margin-bottom:18px}.profile-details{margin-top:23px}}
 @media(max-width:650px){.hero-word{font-size:48vw;transform:translate(-50%,-50%) scaleY(2)}.banner-content{padding-top:calc(6svh + var(--content-offset,0px))}}
 @media(prefers-reduced-motion:reduce){.hero-stage{height:auto}.hero-inner{position:relative;height:auto;min-height:100svh}.hero-type-motion,.portrait-motion{height:100svh;transform:none}.rising-panel{position:relative;top:auto;margin-top:74svh;min-height:480px;height:auto;transform:none;animation:none}.banner-content{animation:none}.banner-social{opacity:1;visibility:visible;transform:none}.hero-person{opacity:1;animation:none;transform:translateX(-50%)}.hero-word span{animation:none}}
+
+/* Oversized letterforms and the reflective mark in the rising panel. */
+.hero-word{font-size:clamp(185px,42vw,600px);gap:.035em}
+.banner-display{flex:0 0 100%;width:100%;margin:9svh 0 0;text-align:center;opacity:var(--display-progress,0);transform:translateY(calc(44px * (1 - var(--display-progress,0)))) scale(calc(.91 + .09 * var(--display-progress,0)));will-change:transform,opacity}
+.banner-display span{position:relative;display:inline-block;max-width:100%;font:400 clamp(80px,12.5vw,180px)/1.08 'Anton',Impact,sans-serif;letter-spacing:.005em;white-space:nowrap;background:linear-gradient(175deg,#faffff 2%,#8cecff 24%,#1552bd 49%,#031b6e 52%,#84eafe 78%,#f6ffff 100%);background-clip:text;-webkit-background-clip:text;color:transparent;-webkit-text-fill-color:transparent;-webkit-text-stroke:1px #ecfbff99;filter:drop-shadow(0 12px 10px #062c7b6e)}
+.banner-display span:after{content:attr(data-text);position:absolute;top:92%;left:0;width:100%;color:#d9ffff;transform:scaleY(-.36);transform-origin:top;opacity:.19;mask-image:linear-gradient(#000,transparent 80%);-webkit-text-fill-color:#d9ffff;pointer-events:none}
+.about-section{padding:58px 0 68px;background:#030918}
+.about-kicker{letter-spacing:.18em}
+.branch-heading{font-size:clamp(46px,6vw,76px);margin-bottom:30px}
+.branch-heading span{color:#4cd6f3}
+.social-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.social-card{min-height:132px;display:flex;align-items:center;gap:21px;padding:25px 28px;background:linear-gradient(135deg,#0d326e,#08204b);border:1px solid #487baa;color:#fff;transition:transform .3s ease,border-color .3s ease,box-shadow .3s ease}
+.social-card:hover{transform:translateY(-5px);border-color:#74dcff;box-shadow:0 16px 35px #0067cf33}
+.social-card-icon{width:54px;height:54px;flex:none;border:1px solid #70bce6;border-radius:50%;display:grid;place-items:center;color:#89e8ff}
+.social-card-name{flex:1;font:800 clamp(20px,2.5vw,30px) 'Manrope',sans-serif;letter-spacing:-.035em;overflow-wrap:anywhere}
+.social-card>svg{color:#89e8ff;flex:none}
+.in-view .social-card{animation:socialCardIn .65s cubic-bezier(.18,.8,.22,1) both;animation-delay:calc(var(--card-index) * .09s)}
+@keyframes socialCardIn{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+.profile-actions{margin-top:24px;padding-top:22px;border-top:1px solid #2d4d73}
+@media(max-width:650px){.hero-word{font-size:56vw;gap:.03em}.banner-display{margin-top:6svh}.banner-display span{font-size:22vw;white-space:normal;line-height:.9}.banner-display span:after{display:none}.about-section{padding:39px 0 46px}.branch-heading{font-size:45px;margin-bottom:20px}.social-grid{grid-template-columns:1fr;gap:12px}.social-card{min-height:100px;padding:18px 20px}.social-card-icon{width:45px;height:45px}.social-card-name{font-size:23px}.profile-actions{margin-top:20px;padding-top:20px}}
+@media(max-width:380px){.hero-word{font-size:55vw}.banner-display span{font-size:12.5vw}}
+@media(prefers-reduced-motion:reduce){.banner-display{opacity:1;transform:none}.social-card{animation:none!important}}
