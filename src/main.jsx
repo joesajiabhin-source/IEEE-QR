@@ -36,7 +36,9 @@ function PanelCutout({ slug }) {
   }, []);
   const fontSize = Math.min(300, size.width * .28, size.height * .48);
   const textLength = Math.min(size.width * .69, fontSize * 6.2);
-  const curve = window.matchMedia('(max-width: 650px)').matches ? .08 : .11;
+  const mobile = window.matchMedia('(max-width: 650px)').matches;
+  const curve = mobile ? .08 : .11;
+  const textBaseline = size.height * (mobile ? .58 : .72);
   const maskId = `banner-cut-${slug.replace(/[^a-z0-9_-]/gi, '')}`;
   const gradientId = `banner-blue-${slug.replace(/[^a-z0-9_-]/gi, '')}`;
   return <svg ref={svgRef} className="panel-surface" viewBox={`0 0 ${size.width} ${size.height}`} preserveAspectRatio="none" aria-hidden="true">
@@ -44,7 +46,7 @@ function PanelCutout({ slug }) {
       <linearGradient id={gradientId} x1="0" y1="0" x2="1" y2=".25"><stop stopColor="#0e4fc9"/><stop offset=".55" stopColor="#2675f2"/><stop offset="1" stopColor="#155bdc"/></linearGradient>
       <mask id={maskId} x="0" y="0" width={size.width} height={size.height} maskUnits="userSpaceOnUse" style={{ maskType: 'luminance' }}>
         <rect width={size.width} height={size.height} fill="white"/>
-        <text x={size.width / 2} y={size.height * .67} textAnchor="middle" fill="black" fontFamily="Anton, Impact, sans-serif" fontSize={fontSize} fontWeight="900" textLength={textLength} lengthAdjust="spacingAndGlyphs">IEEE SB VJEC</text>
+        <text x={size.width / 2} y={textBaseline} textAnchor="middle" fill="black" fontFamily="Anton, Impact, sans-serif" fontSize={fontSize} fontWeight="900" textLength={textLength} lengthAdjust="spacingAndGlyphs">IEEE SB VJEC</text>
       </mask>
     </defs>
     <path d={`M 0 ${size.height * curve} Q ${size.width / 2} ${-size.height * curve * .72} ${size.width} ${size.height * curve} V ${size.height} H 0 Z`} fill={`url(#${gradientId})`} mask={`url(#${maskId})`}/>
@@ -115,15 +117,19 @@ function PublicProfile({ slug }) {
     let frame = 0;
     let current = 0;
     let target = 0;
+    let velocity = 0;
     const paint = () => {
-      current += (target - current) * 0.13;
-      if (Math.abs(target - current) < 0.0015) current = target;
+      velocity = (velocity + (target - current) * 0.035) * 0.74;
+      current = Math.min(1, Math.max(0, current + velocity));
+      if (Math.abs(target - current) < 0.0015 && Math.abs(velocity) < 0.0015) { current = target; velocity = 0; }
       hero.style.setProperty('--type-y', `${Math.round(-95 * current)}px`);
       hero.style.setProperty('--person-y', `${Math.round(-42 * current)}px`);
+      const introProgress = Math.min(1, current / .18);
+      const introEase = introProgress * introProgress * (3 - 2 * introProgress);
+      hero.style.setProperty('--intro-opacity', String(1 - introEase));
       const panelProgress = Math.min(1, current / .75);
       hero.style.setProperty('--panel-rise', `${Math.round(hero.querySelector('.hero-inner').clientHeight * .68 * panelProgress)}px`);
-      const reveal = Math.min(1, Math.max(0, (panelProgress - .55) / .15));
-      const easedReveal = reveal * reveal * (3 - 2 * reveal);
+      const easedReveal = panelProgress >= .985 ? 1 : 0;
       hero.style.setProperty('--cutout-reveal', String(easedReveal));
       hero.style.setProperty('--cutout-rise', `${Math.round(hero.querySelector('.hero-inner').clientHeight * .14 * (1 - easedReveal))}px`);
       frame = current === target ? 0 : requestAnimationFrame(paint);
@@ -174,6 +180,7 @@ function PublicProfile({ slug }) {
             <div className="hero-beams" aria-hidden="true" />
             <div className="hero-inner">
               <p className="eyebrow hero-caption">IEEE STUDENT BRANCH · VJEC</p>
+              {profile && <div className="hero-intro" aria-hidden="true"><span>COORDINATOR PROFILE / {String(profile.id).padStart(4, '0')}</span><h1>{profile.name}</h1><p>{profile.designation}{profile.team_role ? ` · ${profile.team_role}` : ''}</p></div>}
               <div className="hero-type-motion"><div className="hero-word" aria-hidden="true"><span>I</span><span>E</span><span>E</span><span>E</span></div></div>
               <div className="portrait-motion">{(profile || slug === 'arjun') && <Portrait profile={profile || { slug, name: '', photo: null }} />}</div>
               <div className="rising-panel">
