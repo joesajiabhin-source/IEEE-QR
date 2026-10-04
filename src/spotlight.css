@@ -180,7 +180,7 @@ html,body{height:auto;overflow-x:hidden;overflow-y:auto}
 .banner-wordmark{position:absolute;z-index:2;top:2.8%;left:50%;transform:translateX(-50%);color:#f0c2df;font:800 clamp(14px,1.7vw,20px)/1 'Manrope',sans-serif;letter-spacing:.12em;white-space:nowrap;text-shadow:0 1px 8px #0645a088;pointer-events:none}
 
 /* Keep the social destination joined to the banner reveal. */
-.about-section{display:block!important;position:relative;z-index:3;margin:0;padding:48px 0 64px;background:#07152b;border-top:1px solid #315486;}
+.about-section{display:block!important;position:relative;z-index:3;margin:0;padding:0 0 64px;background:#07152b;border-top:1px solid #315486;}
 .about-section .shell{width:min(100% - 48px,1100px);margin-inline:auto}
 .about-kicker{color:#89dfff}
 .branch-heading{margin:8px 0 28px;color:#f4f8ff;font-size:clamp(38px,5vw,64px)}
@@ -198,7 +198,7 @@ html,body{height:auto;overflow-x:hidden;overflow-y:auto}
 .profile-actions button:hover,.profile-actions a:hover{background:#12345a;border-color:#54c8f2;color:#fff}
 .banner-scroll-prompt{position:absolute;z-index:4;top:2.8%;left:50%;display:inline-flex;align-items:center;justify-content:center;gap:9px;transform:translateX(-50%);padding:9px 15px;border:1px solid #8dbdff;border-radius:999px;background:#1043a9;color:#fff;box-shadow:0 4px 14px #061c55a8;font:800 12px/1 'Manrope',sans-serif;letter-spacing:.1em;text-transform:uppercase;white-space:nowrap;opacity:1!important;pointer-events:none}
 .banner-scroll-prompt svg{flex:none}
-@media(max-width:650px){.about-section{padding:36px 0 48px}.about-section .shell{width:calc(100% - 36px)}.social-grid{gap:14px}.social-card,.social-card:nth-child(2){min-height:104px;padding:16px;border-radius:18px}.social-card-icon{width:46px;height:46px;border-radius:15px}.banner-scroll-prompt{top:2.3%;gap:7px;padding:8px 12px;font-size:10px}.banner-scroll-prompt svg{width:14px}}
+@media(max-width:650px){.about-section{padding:0 0 48px}.about-section .shell{width:calc(100% - 36px)}.social-grid{gap:14px}.social-card,.social-card:nth-child(2){min-height:104px;padding:16px;border-radius:18px}.social-card-icon{width:46px;height:46px;border-radius:15px}.banner-scroll-prompt{top:2.3%;gap:7px;padding:8px 12px;font-size:10px}.banner-scroll-prompt svg{width:14px}}
 .hero-intro{opacity:var(--intro-opacity,1)}
 .banner-content{opacity:var(--intro-opacity,1)}
 html{scroll-snap-type:none}
