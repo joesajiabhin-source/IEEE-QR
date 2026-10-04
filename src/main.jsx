@@ -20,6 +20,35 @@ function Portrait({ profile }) {
   if (src) return <img className={`hero-person ${isReferencePortrait ? 'cutout' : 'profile-photo'}`} src={src} alt={profile.name} />;
   return <div className="hero-person portrait-fallback" aria-label={profile.name}>{profile.name.split(' ').map(part => part[0]).slice(0, 2).join('')}</div>;
 }
+function PanelCutout({ slug }) {
+  const svgRef = useRef(null);
+  const [size, setSize] = useState({ width: 1600, height: 800 });
+  useEffect(() => {
+    const panel = svgRef.current?.parentElement;
+    if (!panel || !('ResizeObserver' in window)) return;
+    const observer = new ResizeObserver(([entry]) => {
+      const width = Math.round(entry.contentRect.width);
+      const height = Math.round(entry.contentRect.height);
+      setSize(current => current.width === width && current.height === height ? current : { width, height });
+    });
+    observer.observe(panel);
+    return () => observer.disconnect();
+  }, []);
+  const fontSize = Math.min(270, size.width * .135);
+  const textLength = Math.min(size.width * .78, fontSize * 6.2);
+  const maskId = `banner-cut-${slug.replace(/[^a-z0-9_-]/gi, '')}`;
+  const gradientId = `banner-blue-${slug.replace(/[^a-z0-9_-]/gi, '')}`;
+  return <svg ref={svgRef} className="panel-surface" viewBox={`0 0 ${size.width} ${size.height}`} preserveAspectRatio="none" aria-hidden="true">
+    <defs>
+      <linearGradient id={gradientId} x1="0" y1="0" x2="1" y2=".25"><stop stopColor="#0e4fc9"/><stop offset=".55" stopColor="#2675f2"/><stop offset="1" stopColor="#155bdc"/></linearGradient>
+      <mask id={maskId} x="0" y="0" width={size.width} height={size.height} maskUnits="userSpaceOnUse" style={{ maskType: 'luminance' }}>
+        <rect width={size.width} height={size.height} fill="white"/>
+        <text x={size.width / 2} y={size.height * .42} textAnchor="middle" fill="black" fontFamily="Anton, Impact, sans-serif" fontSize={fontSize} fontWeight="900" textLength={textLength} lengthAdjust="spacingAndGlyphs">IEEE SB VJEC</text>
+      </mask>
+    </defs>
+    <path d={`M 0 ${size.height * .11} Q ${size.width / 2} ${-size.height * .08} ${size.width} ${size.height * .11} V ${size.height} H 0 Z`} fill={`url(#${gradientId})`} mask={`url(#${maskId})`}/>
+  </svg>;
+}
 function PublicProfile({ slug }) {
   const [data, setData] = useState(null);
   const [error, setError] = useState('');
@@ -58,8 +87,8 @@ function PublicProfile({ slug }) {
     let current = 0;
     let target = 0;
     const paint = () => {
-      current += (target - current) * 0.16;
-      if (Math.abs(target - current) < 0.002) current = target;
+      current += (target - current) * 0.13;
+      if (Math.abs(target - current) < 0.0015) current = target;
       hero.style.setProperty('--type-y', `${Math.round(-95 * current)}px`);
       hero.style.setProperty('--person-y', `${Math.round(-42 * current)}px`);
       hero.style.setProperty('--panel-rise', `${Math.round(hero.querySelector('.hero-inner').clientHeight * .84 * current)}px`);
@@ -116,10 +145,10 @@ function PublicProfile({ slug }) {
               <div className="hero-type-motion"><div className="hero-word" aria-hidden="true"><span>I</span><span>E</span><span>E</span><span>E</span></div></div>
               <div className="portrait-motion">{(profile || slug === 'arjun') && <Portrait profile={profile || { slug, name: '', photo: null }} />}</div>
               <div className="rising-panel">
+              <PanelCutout slug={slug} />
               <div className="banner-content">
                 <div><span className="banner-kicker">COORDINATOR PROFILE{profile ? ` / ${String(profile.id).padStart(4, '0')}` : ''}</span><h1>{profile?.name || 'Coordinator'}</h1>{profile && <span className="banner-role">{profile.designation}{profile.team_role ? ` · ${profile.team_role}` : ''}</span>}</div>
                 <span className="banner-scroll">Scroll to connect <ArrowDown size={18} /></span>
-                <div className="banner-display" aria-hidden="true"><span data-text="IEEE SB VJEC">IEEE SB VJEC</span></div>
               </div>
               </div>
             </div>
