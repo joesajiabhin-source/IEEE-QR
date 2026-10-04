@@ -50,6 +50,7 @@ function PanelCutout({ slug }) {
       </mask>
     </defs>
     <path d={`M 0 ${size.height * curve} Q ${size.width / 2} ${-size.height * curve * .72} ${size.width} ${size.height * curve} V ${size.height} H 0 Z`} fill={`url(#${gradientId})`} mask={`url(#${maskId})`}/>
+    <text className="banner-solid-word" x={size.width / 2} y={textBaseline} textAnchor="middle" fill="#ff5268" fontFamily="Anton, Impact, sans-serif" fontSize={fontSize} fontWeight="900" textLength={textLength} lengthAdjust="spacingAndGlyphs">IEEE SB VJEC</text>
   </svg>;
 }
 function PublicProfile({ slug }) {
@@ -85,6 +86,7 @@ function PublicProfile({ slug }) {
       const reveal = smooth((progress - .08) / .55);
       hero.style.setProperty('--cutout-reveal', String(reveal));
       hero.style.setProperty('--cutout-rise', `${Math.round(sceneHeight * .1 * (1 - reveal))}px`);
+      hero.style.setProperty('--solid-word-opacity', String(smooth((progress - .86) / .14)));
       hero.style.setProperty('--intro-opacity', String(1 - smooth(progress / .35)));
       frame = 0;
     };

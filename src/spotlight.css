@@ -199,6 +199,8 @@ html,body{height:auto;overflow-x:hidden;overflow-y:auto}
 .profile-actions button:hover,.profile-actions a:hover{background:#12345a;border-color:#54c8f2;color:#fff}
 .banner-scroll-prompt{position:absolute;z-index:4;top:2.8%;left:50%;display:inline-flex;align-items:center;justify-content:center;gap:9px;transform:translateX(-50%);padding:0;border:0;border-radius:0;background:transparent;color:#fff;box-shadow:none;text-shadow:0 2px 8px #063077c7;font:800 12px/1 'Manrope',sans-serif;letter-spacing:.1em;text-transform:uppercase;white-space:nowrap;opacity:1!important;pointer-events:none}
 .banner-scroll-prompt svg{flex:none}
+.banner-solid-word{opacity:var(--solid-word-opacity,0);pointer-events:none}
+@media(prefers-reduced-motion:reduce){.banner-solid-word{opacity:1!important}}
 @media(max-width:650px){.about-section{padding:0 0 48px}.about-section .shell{width:calc(100% - 36px)}.social-grid{gap:14px}.social-card,.social-card:nth-child(2){min-height:104px;padding:16px;border-radius:18px}.social-card-icon{width:46px;height:46px;border-radius:15px}.banner-scroll-prompt{top:2.3%;gap:7px;padding:0;font-size:10px}.banner-scroll-prompt svg{width:14px}}
 .hero-intro{opacity:var(--intro-opacity,1)}
 .banner-content{opacity:var(--intro-opacity,1)}
