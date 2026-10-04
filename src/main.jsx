@@ -69,6 +69,37 @@ function PublicProfile({ slug }) {
     document.title = `${data.profile.name} | IEEE SB VJEC`;
   }, [data]);
   useEffect(() => {
+    const hero = heroRef.current;
+    if (!hero || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    let frame = 0;
+    let progress = 0;
+    const clamp = value => Math.min(1, Math.max(0, value));
+    const smooth = value => { const t = clamp(value); return t * t * (3 - 2 * t); };
+    const paint = () => {
+      const sceneHeight = hero.querySelector('.hero-inner')?.clientHeight || window.innerHeight;
+      const eased = smooth(progress);
+      const panelTravel = .92;
+      hero.style.setProperty('--panel-rise', `${Math.round(sceneHeight * panelTravel * eased)}px`);
+      hero.style.setProperty('--type-y', `${Math.round(-70 * eased)}px`);
+      hero.style.setProperty('--person-y', `${Math.round(-25 * eased)}px`);
+      const reveal = smooth((progress - .08) / .55);
+      hero.style.setProperty('--cutout-reveal', String(reveal));
+      hero.style.setProperty('--cutout-rise', `${Math.round(sceneHeight * .1 * (1 - reveal))}px`);
+      hero.style.setProperty('--intro-opacity', String(1 - smooth(progress / .35)));
+      frame = 0;
+    };
+    const update = () => {
+      const inner = hero.querySelector('.hero-inner');
+      if (!inner) return;
+      progress = clamp(-hero.getBoundingClientRect().top / Math.max(1, hero.offsetHeight - inner.clientHeight));
+      if (!frame) frame = requestAnimationFrame(paint);
+    };
+    window.addEventListener('scroll', update, { passive: true });
+    window.addEventListener('resize', update);
+    update();
+    return () => { window.removeEventListener('scroll', update); window.removeEventListener('resize', update); cancelAnimationFrame(frame); };
+  }, []);
+  useEffect(() => {
     const section = aboutRef.current;
     if (!section || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     let frame = 0;
@@ -110,37 +141,6 @@ function PublicProfile({ slug }) {
     window.addEventListener('keydown', onEscape);
     return () => window.removeEventListener('keydown', onEscape);
   }, [qrOpen]);
-  useEffect(() => {
-    const hero = heroRef.current;
-    if (!hero || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    let frame = 0;
-    let progress = 0;
-    const clamp = value => Math.min(1, Math.max(0, value));
-    const smooth = value => { const t = clamp(value); return t * t * (3 - 2 * t); };
-    const paint = () => {
-      const sceneHeight = hero.querySelector('.hero-inner')?.clientHeight || window.innerHeight;
-      const eased = smooth(progress);
-      const panelTravel = window.matchMedia('(max-width: 650px)').matches ? .58 : .55;
-      hero.style.setProperty('--panel-rise', `${Math.round(sceneHeight * panelTravel * eased)}px`);
-      hero.style.setProperty('--type-y', `${Math.round(-70 * eased)}px`);
-      hero.style.setProperty('--person-y', `${Math.round(-25 * eased)}px`);
-      const reveal = smooth((progress - .08) / .55);
-      hero.style.setProperty('--cutout-reveal', String(reveal));
-      hero.style.setProperty('--cutout-rise', `${Math.round(sceneHeight * .1 * (1 - reveal))}px`);
-      hero.style.setProperty('--intro-opacity', String(1 - smooth(progress / .35)));
-      frame = 0;
-    };
-    const update = () => {
-      const inner = hero.querySelector('.hero-inner');
-      if (!inner) return;
-      progress = clamp(-hero.getBoundingClientRect().top / Math.max(1, hero.offsetHeight - inner.clientHeight));
-      if (!frame) frame = requestAnimationFrame(paint);
-    };
-    window.addEventListener('scroll', update, { passive: true });
-    window.addEventListener('resize', update);
-    update();
-    return () => { window.removeEventListener('scroll', update); window.removeEventListener('resize', update); cancelAnimationFrame(frame); };
-  }, []);
   const profile = data?.profile;
   const url = data?.url;
   const copyUrl = async () => {
