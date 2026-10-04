@@ -173,7 +173,7 @@ html{scroll-snap-type:none}.hero-stage{scroll-snap-align:none;scroll-snap-stop:n
 /* Scroll through the layered hero until the blue banner fills the viewport. */
 html,body{height:auto;overflow-x:hidden;overflow-y:auto}
 .site{height:auto;min-height:100svh;overflow:visible}
-.hero-stage{height:148svh!important;min-height:0!important;overflow:visible!important}
+.hero-stage{height:192svh!important;min-height:0!important;overflow:visible!important}
 .hero-inner{position:fixed!important;top:0!important;left:0!important;right:0!important;height:100svh!important;min-height:0!important;overflow:hidden!important}
 .rising-panel{top:92%!important;bottom:auto!important;height:100%!important;transform:translate3d(0,calc(0px - var(--panel-rise,0px)),0)!important;transform-origin:top center;will-change:transform}
 .rising-panel:before{opacity:0!important}
@@ -202,5 +202,5 @@ html,body{height:auto;overflow-x:hidden;overflow-y:auto}
 .hero-intro{opacity:var(--intro-opacity,1)}
 .banner-content{opacity:var(--intro-opacity,1)}
 html{scroll-snap-type:none}
-@media(max-width:650px){.hero-stage{height:148svh!important}.hero-inner{height:100svh!important}.rising-panel{top:92%!important;height:100%!important}}
+@media(max-width:650px){.hero-stage{height:192svh!important}.hero-inner{height:100svh!important}.rising-panel{top:92%!important;height:100%!important}}
 @media(prefers-reduced-motion:reduce){.hero-stage{height:100svh!important}.hero-inner{position:relative!important;height:100svh!important}.rising-panel{position:absolute!important;top:55%!important;height:45%!important;transform:none!important}}
