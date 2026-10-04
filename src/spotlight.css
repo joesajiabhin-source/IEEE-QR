@@ -136,3 +136,6 @@
 @media(prefers-reduced-motion:reduce){.hero-stage{height:auto;min-height:0;overflow:visible}.hero-inner{position:relative;top:auto;height:100svh;min-height:100svh;overflow:hidden}.rising-panel{position:relative;top:auto;left:0;width:100%;height:auto;min-height:340px;margin-top:0;transform:none;overflow:hidden;animation:none;background:linear-gradient(115deg,#0e4fc9,#2675ef 55%,#155bdc)}.rising-panel:before{display:none}.hero-intro{display:none}.banner-content{width:90%;margin:30px auto 0;opacity:1;transform:none}.about-section{margin-top:0;border-radius:0}.about-kicker,.branch-heading,.social-card,.profile-actions{opacity:1;filter:none;transform:none}.social-card{animation:none!important}}
 .brand-official .brand-mark{position:relative;width:188px;height:56px;flex:none;overflow:hidden;padding:0;background:transparent}
 .brand-official .brand-mark img{display:block;width:100%;height:100%;max-width:none;object-fit:fill}
+/* Keep the blue hero and social links as consecutive scroll stops. */
+html{scroll-snap-type:y mandatory}
+.hero-stage,.about-section{scroll-snap-align:start;scroll-snap-stop:always}
