@@ -182,6 +182,7 @@ function PublicProfile({ slug }) {
               <div className="portrait-motion">{(profile || slug === 'arjun') && <Portrait profile={profile || { slug, name: '', photo: null }} />}</div>
               <div className="rising-panel">
               <PanelCutout slug={slug} />
+              <span className="banner-wordmark" aria-hidden="true">IEEE SB VJEC</span>
               <div className="banner-content">
                 <span className="banner-scroll"><span>Scroll to connect</span><ArrowDown size={18} /></span>
               </div>

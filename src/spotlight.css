@@ -173,6 +173,7 @@ html,body{height:auto;overflow-x:hidden;overflow-y:auto}
 .hero-inner{position:fixed!important;top:0!important;left:0!important;right:0!important;height:100svh!important;min-height:0!important;overflow:hidden!important}
 .rising-panel{top:92%!important;bottom:auto!important;height:100%!important;transform:translate3d(0,calc(0px - var(--panel-rise,0px)),0)!important;transform-origin:top center;will-change:transform}
 .rising-panel:before{opacity:0!important}
+.banner-wordmark{position:absolute;z-index:2;top:2.8%;left:50%;transform:translateX(-50%);color:#f0c2df;font:800 clamp(14px,1.7vw,20px)/1 'Manrope',sans-serif;letter-spacing:.12em;white-space:nowrap;text-shadow:0 1px 8px #0645a088;pointer-events:none}
 .hero-intro{opacity:var(--intro-opacity,1)}
 .banner-content{opacity:var(--intro-opacity,1)}
 html{scroll-snap-type:none}
