@@ -34,7 +34,7 @@ function PanelCutout({ slug }) {
     observer.observe(panel);
     return () => observer.disconnect();
   }, []);
-  const fontSize = Math.min(300, size.width * .18);
+  const fontSize = Math.min(300, size.width * .28, size.height * .48);
   const textLength = Math.min(size.width * .69, fontSize * 6.2);
   const curve = window.matchMedia('(max-width: 650px)').matches ? .08 : .11;
   const maskId = `banner-cut-${slug.replace(/[^a-z0-9_-]/gi, '')}`;
@@ -44,7 +44,7 @@ function PanelCutout({ slug }) {
       <linearGradient id={gradientId} x1="0" y1="0" x2="1" y2=".25"><stop stopColor="#0e4fc9"/><stop offset=".55" stopColor="#2675f2"/><stop offset="1" stopColor="#155bdc"/></linearGradient>
       <mask id={maskId} x="0" y="0" width={size.width} height={size.height} maskUnits="userSpaceOnUse" style={{ maskType: 'luminance' }}>
         <rect width={size.width} height={size.height} fill="white"/>
-        <text x={size.width / 2} y={size.height * .42} textAnchor="middle" fill="black" fontFamily="Anton, Impact, sans-serif" fontSize={fontSize} fontWeight="900" textLength={textLength} lengthAdjust="spacingAndGlyphs">IEEE SB VJEC</text>
+        <text x={size.width / 2} y={size.height * .67} textAnchor="middle" fill="black" fontFamily="Anton, Impact, sans-serif" fontSize={fontSize} fontWeight="900" textLength={textLength} lengthAdjust="spacingAndGlyphs">IEEE SB VJEC</text>
       </mask>
     </defs>
     <path d={`M 0 ${size.height * curve} Q ${size.width / 2} ${-size.height * curve * .72} ${size.width} ${size.height * curve} V ${size.height} H 0 Z`} fill={`url(#${gradientId})`} mask={`url(#${maskId})`}/>
@@ -92,8 +92,9 @@ function PublicProfile({ slug }) {
       if (Math.abs(target - current) < 0.0015) current = target;
       hero.style.setProperty('--type-y', `${Math.round(-95 * current)}px`);
       hero.style.setProperty('--person-y', `${Math.round(-42 * current)}px`);
-      hero.style.setProperty('--panel-rise', `${Math.round(hero.querySelector('.hero-inner').clientHeight * .84 * current)}px`);
-      const reveal = Math.min(1, Math.max(0, (current - .32) / .12));
+      const panelProgress = Math.min(1, current / .75);
+      hero.style.setProperty('--panel-rise', `${Math.round(hero.querySelector('.hero-inner').clientHeight * .72 * panelProgress)}px`);
+      const reveal = Math.min(1, Math.max(0, (panelProgress - .55) / .15));
       const easedReveal = reveal * reveal * (3 - 2 * reveal);
       hero.style.setProperty('--cutout-reveal', String(easedReveal));
       hero.style.setProperty('--cutout-rise', `${Math.round(hero.querySelector('.hero-inner').clientHeight * .14 * (1 - easedReveal))}px`);
