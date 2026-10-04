@@ -35,10 +35,10 @@ function PanelCutout({ slug }) {
     return () => observer.disconnect();
   }, []);
   const mobile = window.matchMedia('(max-width: 650px)').matches;
-  const fontSize = mobile ? Math.min(400, size.width * .72, size.height * .76) : Math.min(300, size.width * .28, size.height * .48);
-  const textLength = mobile ? size.width * .82 : Math.min(size.width * .69, fontSize * 6.2);
+  const fontSize = mobile ? Math.min(340, size.width * .62, size.height * .44) : Math.min(300, size.width * .28, size.height * .48);
+  const textLength = mobile ? size.width * .94 : Math.min(size.width * .69, fontSize * 6.2);
   const curve = .035;
-  const textBaseline = size.height * (mobile ? .58 : .72);
+  const textBaseline = size.height * (mobile ? .54 : .72);
   const maskId = `banner-cut-${slug.replace(/[^a-z0-9_-]/gi, '')}`;
   const gradientId = `banner-blue-${slug.replace(/[^a-z0-9_-]/gi, '')}`;
   return <svg ref={svgRef} className="panel-surface" viewBox={`0 0 ${size.width} ${size.height}`} preserveAspectRatio="none" aria-hidden="true">

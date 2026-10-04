@@ -194,6 +194,7 @@ html,body{height:auto;overflow-x:hidden;overflow-y:auto}
 .social-card>svg{color:#70dfff}
 .empty-accounts{color:#b5c7dc}
 .profile-actions{border-color:#284565}
+.profile-actions{opacity:1!important;filter:none!important;transform:none!important}
 .profile-actions button,.profile-actions a{border:1px solid #254367;border-radius:12px;background:linear-gradient(145deg,#102747,#0a1b34);box-shadow:5px 5px 12px #030b18,-4px -4px 12px #142d4c;color:#dcecff}
 .profile-actions button:hover,.profile-actions a:hover{background:#12345a;border-color:#54c8f2;color:#fff}
 .banner-scroll-prompt{position:absolute;z-index:4;top:2.8%;left:50%;display:inline-flex;align-items:center;justify-content:center;gap:9px;transform:translateX(-50%);padding:0;border:0;border-radius:0;background:transparent;color:#fff;box-shadow:none;text-shadow:0 2px 8px #063077c7;font:800 12px/1 'Manrope',sans-serif;letter-spacing:.1em;text-transform:uppercase;white-space:nowrap;opacity:1!important;pointer-events:none}
