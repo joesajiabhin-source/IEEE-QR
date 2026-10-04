@@ -34,8 +34,8 @@ function PanelCutout({ slug }) {
     observer.observe(panel);
     return () => observer.disconnect();
   }, []);
-  const fontSize = Math.min(270, size.width * .135);
-  const textLength = Math.min(size.width * .78, fontSize * 6.2);
+  const fontSize = Math.min(280, size.width * .165);
+  const textLength = Math.min(size.width * .69, fontSize * 6.2);
   const maskId = `banner-cut-${slug.replace(/[^a-z0-9_-]/gi, '')}`;
   const gradientId = `banner-blue-${slug.replace(/[^a-z0-9_-]/gi, '')}`;
   return <svg ref={svgRef} className="panel-surface" viewBox={`0 0 ${size.width} ${size.height}`} preserveAspectRatio="none" aria-hidden="true">
