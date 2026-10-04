@@ -139,3 +139,7 @@
 /* Keep the blue hero and social links as consecutive scroll stops. */
 html{scroll-snap-type:y mandatory}
 .hero-stage,.about-section{scroll-snap-align:start;scroll-snap-stop:always}
+/* Temporary banner-only view: hide content below the banner. */
+html,body{height:100%;overflow:hidden}
+.site{height:100svh;min-height:0;overflow:hidden}
+.about-section,.site-footer{display:none!important}
