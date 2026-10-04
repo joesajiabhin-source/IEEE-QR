@@ -36,6 +36,7 @@ function PanelCutout({ slug }) {
   }, []);
   const fontSize = Math.min(300, size.width * .18);
   const textLength = Math.min(size.width * .69, fontSize * 6.2);
+  const curve = window.matchMedia('(max-width: 650px)').matches ? .08 : .11;
   const maskId = `banner-cut-${slug.replace(/[^a-z0-9_-]/gi, '')}`;
   const gradientId = `banner-blue-${slug.replace(/[^a-z0-9_-]/gi, '')}`;
   return <svg ref={svgRef} className="panel-surface" viewBox={`0 0 ${size.width} ${size.height}`} preserveAspectRatio="none" aria-hidden="true">
@@ -46,7 +47,7 @@ function PanelCutout({ slug }) {
         <text x={size.width / 2} y={size.height * .42} textAnchor="middle" fill="black" fontFamily="Anton, Impact, sans-serif" fontSize={fontSize} fontWeight="900" textLength={textLength} lengthAdjust="spacingAndGlyphs">IEEE SB VJEC</text>
       </mask>
     </defs>
-    <path d={`M 0 ${size.height * .11} Q ${size.width / 2} ${-size.height * .08} ${size.width} ${size.height * .11} V ${size.height} H 0 Z`} fill={`url(#${gradientId})`} mask={`url(#${maskId})`}/>
+    <path d={`M 0 ${size.height * curve} Q ${size.width / 2} ${-size.height * curve * .72} ${size.width} ${size.height * curve} V ${size.height} H 0 Z`} fill={`url(#${gradientId})`} mask={`url(#${maskId})`}/>
   </svg>;
 }
 function PublicProfile({ slug }) {
@@ -92,7 +93,10 @@ function PublicProfile({ slug }) {
       hero.style.setProperty('--type-y', `${Math.round(-95 * current)}px`);
       hero.style.setProperty('--person-y', `${Math.round(-42 * current)}px`);
       hero.style.setProperty('--panel-rise', `${Math.round(hero.querySelector('.hero-inner').clientHeight * .84 * current)}px`);
-      hero.style.setProperty('--banner-content-opacity', String(Math.min(1, Math.max(0, (current - .2) / .1))));
+      const reveal = Math.min(1, Math.max(0, (current - .7) / .1));
+      const easedReveal = reveal * reveal * (3 - 2 * reveal);
+      hero.style.setProperty('--cutout-reveal', String(easedReveal));
+      hero.style.setProperty('--cutout-rise', `${Math.round(hero.querySelector('.hero-inner').clientHeight * .14 * (1 - easedReveal))}px`);
       frame = current === target ? 0 : requestAnimationFrame(paint);
     };
     const update = () => {
@@ -145,10 +149,10 @@ function PublicProfile({ slug }) {
               <div className="portrait-motion">{(profile || slug === 'arjun') && <Portrait profile={profile || { slug, name: '', photo: null }} />}</div>
               <div className="rising-panel">
               <PanelCutout slug={slug} />
-              </div>
               <div className="banner-content">
                 <div><span className="banner-kicker">COORDINATOR PROFILE{profile ? ` / ${String(profile.id).padStart(4, '0')}` : ''}</span><h1>{profile?.name || 'Coordinator'}</h1>{profile && <span className="banner-role">{profile.designation}{profile.team_role ? ` · ${profile.team_role}` : ''}</span>}</div>
                 <span className="banner-scroll">Scroll to connect <ArrowDown size={18} /></span>
+              </div>
               </div>
             </div>
           </section>
