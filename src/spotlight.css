@@ -66,4 +66,38 @@
 @media(max-width:650px){.site-header{height:66px}.hero-stage{height:100svh;min-height:660px}.hero-caption{top:82px;left:20px;font-size:8px}.hero-word{top:50%;font-size:min(68svh,650px);transform:translate(-50%,-50%) scaleX(.7)}.hero-person.cutout{width:145vw;height:88%;bottom:8%}.hero-person.profile-photo,.portrait-fallback{width:85vw;height:67%;bottom:16%}.hero-banner{width:155%;left:-27.5%;height:39%;bottom:-9%;border-radius:50% 50% 0 0/31% 31% 0 0}.banner-content{left:20px;right:20px;bottom:22px;align-items:end;gap:14px}.banner-content h1{font-size:clamp(25px,7.5vw,38px)}.banner-kicker{font-size:8px}.banner-role{font-size:9px}.banner-scroll{font-size:11px;gap:5px;padding:9px 0}.banner-scroll svg{width:15px}.about-section{padding-top:88px}.profile-details div+div{border-color:#2c4465}}
 @media(max-width:420px){.hero-word{transform:translate(-50%,-50%) scaleX(.6)}.hero-person.cutout{width:154vw;height:86%;bottom:9%}.banner-content{display:block}.banner-scroll{margin-top:15px}.banner-content h1{font-size:31px}.hero-banner{height:43%;bottom:-11%}}
 @media(max-width:360px){.hero-word{transform:translate(-50%,-50%) scaleX(.54)}.hero-person.cutout{width:162vw}.banner-content h1{font-size:27px}}
-@media(prefers-reduced-motion:reduce){.hero-word span,.hero-word:after,.hero-person,.hero-banner,.banner-content{animation:none!important}.hero-person{opacity:1;transform:translateX(-50%);filter:drop-shadow(0 16px 25px #0009)}.hero-banner{opacity:1;transform:none}.banner-content{opacity:1;transform:none}}
+/* The sticky scene stays in place while the contact banner rises over it. */
+.hero-stage{height:180svh;min-height:0;overflow:clip;background:none}
+.hero-stage:before,.hero-stage:after{display:none}
+.hero-inner{position:sticky;top:0;height:100svh;min-height:600px;overflow:hidden;background:radial-gradient(ellipse 55% 70% at 50% 5%,#216bff, #092966 55%,#01050d 100%)}
+.hero-beams{display:none}
+.hero-inner:before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(90deg,transparent 0 8%,#00081e70 9% 11%,transparent 13% 22%);mask-image:linear-gradient(#000,transparent 90%);filter:blur(5px)}
+.hero-word{top:52%;font-size:clamp(160px,34vw,480px);letter-spacing:0;padding:0;gap:.065em;line-height:1;transform:translate(-50%,-50%) scaleY(1.3);background:none;filter:drop-shadow(0 0 18px #12aaff66)}
+.hero-word span{flex:none;background:linear-gradient(180deg,#fff 5%,#e9faff 27%,#41e6ff 58%,#0572f0 88%);background-clip:text;-webkit-background-clip:text;color:transparent;-webkit-text-fill-color:transparent}
+.hero-word:after{display:none}
+.hero-person.cutout{height:94%;bottom:0;width:min(72vw,950px)}
+.rising-panel{position:absolute;z-index:4;top:74%;left:-15%;width:130%;height:125%;border-radius:50% 50% 0 0/11% 11% 0 0;background:linear-gradient(115deg,#0e4fc9,#2675f2 55%,#155bdc);box-shadow:0 -2px 0 #85baff66;transform:translate3d(0,calc(0px - var(--panel-rise,0px)),0);will-change:transform;animation:panelEntrance .85s 1.35s both}
+@keyframes panelEntrance{from{opacity:0;margin-top:100px}to{opacity:1;margin-top:0}}
+.banner-content{position:relative;inset:auto;width:min(1180px,69%);margin:0 auto;padding:7svh 0 30px;display:flex;flex-wrap:wrap;align-items:center;gap:16px;animation:bannerTextIn .6s 1.75s both}
+.banner-content>div:first-child{flex:1}
+.banner-content h1{font-size:clamp(28px,4vw,48px)}
+.banner-scroll{font-size:12px;border:0}
+.banner-social{flex:0 0 100%;width:100%;margin-top:22px;opacity:var(--social-opacity,0);visibility:hidden;transform:translateY(calc(24px * (1 - var(--social-opacity,0))));transition:visibility .1s}
+.banner-social .account-list{max-width:700px}
+.rising-panel{z-index:6}
+.banner-content{padding-top:calc(7svh + var(--content-offset,0px))}
+.social-visible .banner-social{visibility:visible}
+.banner-social h2{font:800 clamp(27px,4vw,42px)/1.1 'Manrope',sans-serif;letter-spacing:-.04em;margin:0 0 17px}
+.banner-social .account-link{border-color:#b1d5ff70;min-height:64px;color:#fff}
+.banner-social .account-icon{border-color:#c6e3ff;color:#fff}
+.banner-social .account-arrow{color:#fff}
+.banner-social .account-link:hover{background:#ffffff0c;transform:translateX(3px)}
+.details-link{display:inline-flex;gap:10px;align-items:center;margin-top:22px;font-size:13px;border-bottom:1px solid #b4d8ff;padding-bottom:7px}
+.about-section{padding:35px 0 48px;scroll-margin-top:15px}
+.about-kicker{margin-bottom:9px}.branch-heading{font-size:clamp(30px,4vw,46px);margin-bottom:20px}
+.branch-grid{grid-template-columns:1fr;padding-top:19px;gap:0}.branch-note{margin-bottom:12px}.branch-intro h3{font-size:28px}.branch-role{margin-top:8px}.branch-bio{margin-top:15px;max-width:760px}
+.profile-details{margin-top:25px}.profile-details div{padding-top:17px;padding-bottom:17px}.profile-actions{margin-top:21px}
+.in-view .branch-intro{animation:gentleIn .55s both}
+@media(max-width:650px){.hero-inner{min-height:600px}.hero-word{top:44%;font-size:37vw;transform:translate(-50%,-50%) scaleY(2.45)}.hero-person.cutout{width:120vw;height:81%;bottom:5%}.hero-caption{top:80px}.rising-panel{border-radius:50% 50% 0 0/8% 8% 0 0}.banner-content{width:70%;padding-top:6svh;gap:8px}.banner-content>div:first-child{flex-basis:100%}.banner-content h1{font-size:29px}.banner-scroll{margin:2px 0 0;padding:4px 0}.banner-social{margin-top:17px}.banner-social .account-link{min-height:58px}.banner-role{font-size:10px}.about-section{padding:28px 0 38px}.branch-heading{font-size:32px;margin-bottom:18px}.profile-details{margin-top:23px}}
+@media(max-width:650px){.hero-word{font-size:48vw;transform:translate(-50%,-50%) scaleY(2)}.banner-content{padding-top:calc(6svh + var(--content-offset,0px))}}
+@media(prefers-reduced-motion:reduce){.hero-stage{height:auto}.hero-inner{position:relative;height:auto;min-height:100svh}.hero-type-motion,.portrait-motion{height:100svh;transform:none}.rising-panel{position:relative;top:auto;margin-top:74svh;min-height:480px;height:auto;transform:none;animation:none}.banner-content{animation:none}.banner-social{opacity:1;visibility:visible;transform:none}.hero-person{opacity:1;animation:none;transform:translateX(-50%)}.hero-word span{animation:none}}

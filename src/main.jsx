@@ -62,11 +62,14 @@ function PublicProfile({ slug }) {
       if (Math.abs(target - current) < 0.002) current = target;
       hero.style.setProperty('--type-y', `${Math.round(-95 * current)}px`);
       hero.style.setProperty('--person-y', `${Math.round(-42 * current)}px`);
-      hero.style.setProperty('--banner-y', `${Math.round(26 * current)}px`);
+      hero.style.setProperty('--panel-rise', `${Math.round(hero.querySelector('.hero-inner').clientHeight * .84 * current)}px`);
+      hero.style.setProperty('--content-offset', `${Math.round(hero.querySelector('.hero-inner').clientHeight * .1 * current)}px`);
+      hero.style.setProperty('--social-opacity', String(Math.min(1, Math.max(0, (current - .25) / .35))));
+      hero.classList.toggle('social-visible', current > .25);
       frame = current === target ? 0 : requestAnimationFrame(paint);
     };
     const update = () => {
-      target = Math.min(1, Math.max(0, -hero.getBoundingClientRect().top / Math.max(1, hero.offsetHeight)));
+      target = Math.min(1, Math.max(0, -hero.getBoundingClientRect().top / Math.max(1, hero.offsetHeight - hero.querySelector('.hero-inner').clientHeight)));
       if (!frame) frame = requestAnimationFrame(paint);
     };
     window.addEventListener('scroll', update, { passive: true });
@@ -113,10 +116,12 @@ function PublicProfile({ slug }) {
               <p className="eyebrow hero-caption">IEEE STUDENT BRANCH · VJEC</p>
               <div className="hero-type-motion"><div className="hero-word" aria-hidden="true"><span>I</span><span>E</span><span>E</span><span>E</span></div></div>
               <div className="portrait-motion">{(profile || slug === 'arjun') && <Portrait profile={profile || { slug, name: '', photo: null }} />}</div>
-              <div className="banner-motion" aria-hidden="true"><div className="hero-banner" /></div>
+              <div className="rising-panel">
               <div className="banner-content">
                 <div><span className="banner-kicker">COORDINATOR PROFILE{profile ? ` / ${String(profile.id).padStart(4, '0')}` : ''}</span><h1>{profile?.name || 'Coordinator'}</h1>{profile && <span className="banner-role">{profile.designation}{profile.team_role ? ` · ${profile.team_role}` : ''}</span>}</div>
-                <a href="#sb-vjec" className="banner-scroll">Explore profile <ArrowDown size={18} /></a>
+                <span className="banner-scroll">Scroll to connect <ArrowDown size={18} /></span>
+                <div className="banner-social"><h2>Let’s connect.</h2><div className="account-list">{accounts.map(({ label, href, icon: Icon }, index) => <a className="account-link" key={`${label}-${index}`} href={href} target="_blank" rel="noreferrer"><span className="account-icon"><Icon size={22} /></span><span>{label}</span><ArrowUpRight className="account-arrow" size={20} /></a>)}</div>{!accounts.length && <p>Account links will appear here when added.</p>}<a className="details-link" href="#sb-vjec">Profile details <ArrowDown size={17} /></a></div>
+              </div>
               </div>
             </div>
           </section>
@@ -127,7 +132,6 @@ function PublicProfile({ slug }) {
               <h2 className="branch-heading" id="branch-heading">Profile &amp; contact</h2>
               <div className="branch-grid">
                 <div className="branch-intro"><p className="branch-note">ABOUT</p><h3>{profile.name}</h3><p className="branch-role">{profile.designation}{profile.team_role ? ` · ${profile.team_role}` : ''}</p><p className="branch-bio">{profile.bio || `${profile.name} is a coordinator at ${profile.organization || 'IEEE SB VJEC'}.`}</p></div>
-                <div className="accounts-panel"><div className="panel-label"><span>CONNECT ONLINE</span><span>{String(accounts.length).padStart(2, '0')} ACCOUNTS</span></div>{accounts.length ? <div className="account-list">{accounts.map(({ label, href, icon: Icon }, index) => <a className="account-link" key={`${label}-${index}`} href={href} target="_blank" rel="noreferrer" style={{ '--index': index }}><span className="account-icon"><Icon size={22} /></span><span>{label}</span><ArrowUpRight className="account-arrow" size={20} /></a>)}</div> : <p className="empty-accounts">Official account links will appear here when added.</p>}</div>
               </div>
               <div className="profile-details"><div><span>ORGANIZATION</span><strong>{profile.organization || 'IEEE SB VJEC'}</strong></div>{profile.society && <div><span>SOCIETY</span><strong>{profile.society}</strong></div>}{profile.department && <div><span>ACADEMIC DEPARTMENT</span><strong>{profile.department}</strong></div>}</div>
               <div className="profile-actions"><button onClick={downloadVcard}><ArrowDownToLine size={18} /> Save contact</button><button onClick={share}><Share2 size={18} /> Share profile</button><button onClick={() => setQrOpen(true)}><QrCode size={18} /> Show QR code</button><button onClick={copyUrl}><Copy size={18} /> Copy profile link</button>{contactLinks.map(({ label, href, icon: Icon }) => <a key={label} href={href}><Icon size={18} /> {label}</a>)}</div>
