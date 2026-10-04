@@ -161,3 +161,7 @@ html{scroll-snap-type:none}.hero-stage{scroll-snap-align:none;scroll-snap-stop:n
 /* Size and position the panel against the viewport during the reveal. */
 .rising-panel{top:55svh;height:calc(45svh + var(--panel-rise,0px))}
 @media(max-width:650px){.rising-panel{top:58svh;height:calc(42svh + var(--panel-rise,0px))}}
+
+/* Keep panel sizing in the same coordinate space as the sticky hero. */
+.rising-panel{top:55%;height:calc(45% + var(--panel-rise,0px))}
+@media(max-width:650px){.rising-panel{top:58%;height:calc(42% + var(--panel-rise,0px))}}
