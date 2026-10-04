@@ -148,7 +148,7 @@ html,body{height:100%;overflow:hidden}
 html,body{height:auto;overflow-x:hidden;overflow-y:auto}
 .site{height:auto;min-height:100svh;overflow:visible}
 .hero-stage{height:148svh!important;min-height:0!important}
-.hero-inner{position:sticky!important;top:0;height:100svh!important;min-height:0!important;overflow:hidden!important}
+.hero-inner{position:fixed!important;top:0!important;left:0!important;right:0!important;height:100svh!important;min-height:0!important;overflow:hidden!important}
 .rising-panel{top:55%;bottom:auto;height:100%;transform:translate3d(0,calc(0px - var(--panel-rise,0px)),0);transform-origin:top center;will-change:transform}
 html{scroll-snap-type:none}.hero-stage{scroll-snap-align:none;scroll-snap-stop:normal}
 @media(max-width:650px){.hero-stage{height:148svh!important}.hero-inner{height:100svh!important}.rising-panel{top:58%;height:100%}}
