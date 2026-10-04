@@ -93,7 +93,7 @@ function PublicProfile({ slug }) {
       hero.style.setProperty('--type-y', `${Math.round(-95 * current)}px`);
       hero.style.setProperty('--person-y', `${Math.round(-42 * current)}px`);
       hero.style.setProperty('--panel-rise', `${Math.round(hero.querySelector('.hero-inner').clientHeight * .84 * current)}px`);
-      const reveal = Math.min(1, Math.max(0, (current - .7) / .1));
+      const reveal = Math.min(1, Math.max(0, (current - .32) / .12));
       const easedReveal = reveal * reveal * (3 - 2 * reveal);
       hero.style.setProperty('--cutout-reveal', String(easedReveal));
       hero.style.setProperty('--cutout-rise', `${Math.round(hero.querySelector('.hero-inner').clientHeight * .14 * (1 - easedReveal))}px`);
