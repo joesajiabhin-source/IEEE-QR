@@ -212,3 +212,15 @@ html{scroll-snap-type:none}
 html{scroll-snap-type:y mandatory}
 .hero-stage{scroll-snap-align:end;scroll-snap-stop:always}
 .about-section{scroll-snap-align:start;scroll-snap-stop:always}
+
+/* Give the connection area a living blue-violet glow and clearer interaction. */
+.about-section{background:radial-gradient(ellipse 70% 54% at 8% 0%,#1050a4 0%,transparent 76%),radial-gradient(ellipse 58% 58% at 94% 48%,#4b217e 0%,transparent 78%),#030918}
+.about-section:before{content:'';position:absolute;z-index:0;inset:-16% -12%;background:radial-gradient(ellipse 43% 42% at 30% 22%,#087ce255,transparent 75%),radial-gradient(ellipse 42% 48% at 73% 66%,#9b45d34d,transparent 76%),radial-gradient(ellipse 38% 32% at 50% 92%,#03b9de26,transparent 78%);filter:blur(26px);pointer-events:none;animation:connectAurora 17s ease-in-out infinite alternate}
+.about-section .shell{position:relative;z-index:1}
+@keyframes connectAurora{0%{transform:translate3d(-1.5%,-1%,0) scale(.98)}50%{transform:translate3d(1.5%,1%,0) scale(1.04)}100%{transform:translate3d(-.5%,2%,0) scale(1.01)}}
+.social-card:hover{transform:translateY(-5px) scale(1.01);border-color:#84e5ff;box-shadow:0 16px 42px #087ce25c,0 0 0 1px #71dfff55,inset 0 1px 0 #d2f7ff33}
+.social-card:active{transform:translateY(-1px) scale(.99)}
+.social-card:focus-visible,.profile-actions button:focus-visible,.profile-actions a:focus-visible{outline:3px solid #8cecff;outline-offset:4px}
+.profile-actions button,.profile-actions a{transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease,background .2s ease}
+.profile-actions button:hover,.profile-actions a:hover{transform:translateY(-2px);box-shadow:0 10px 28px #087ce233,-4px -4px 12px #142d4c}
+@media(prefers-reduced-motion:reduce){.about-section:before{animation:none}.social-card,.profile-actions button,.profile-actions a{transition:none}}

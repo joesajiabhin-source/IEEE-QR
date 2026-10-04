@@ -35,10 +35,11 @@ function PanelCutout({ slug }) {
     return () => observer.disconnect();
   }, []);
   const mobile = window.matchMedia('(max-width: 650px)').matches;
-  const fontSize = mobile ? Math.min(340, size.width * .62, size.height * .44) : Math.min(300, size.width * .28, size.height * .48);
-  const textLength = mobile ? size.width * .94 : Math.min(size.width * .69, fontSize * 6.2);
+  const fontSize = mobile ? Math.min(210, size.width * .3, size.height * .19) : Math.min(300, size.width * .28, size.height * .48);
+  const wordLines = mobile
+    ? [{ text: 'IEEE SB', y: size.height * .44, length: size.width * .86 }, { text: 'VJEC', y: size.height * .66, length: size.width * .64 }]
+    : [{ text: 'IEEE SB VJEC', y: size.height * .72, length: Math.min(size.width * .69, fontSize * 6.2) }];
   const curve = .035;
-  const textBaseline = size.height * (mobile ? .54 : .72);
   const maskId = `banner-cut-${slug.replace(/[^a-z0-9_-]/gi, '')}`;
   const gradientId = `banner-blue-${slug.replace(/[^a-z0-9_-]/gi, '')}`;
   return <svg ref={svgRef} className="panel-surface" viewBox={`0 0 ${size.width} ${size.height}`} preserveAspectRatio="none" aria-hidden="true">
@@ -46,11 +47,11 @@ function PanelCutout({ slug }) {
       <linearGradient id={gradientId} x1="0" y1="0" x2="1" y2=".25"><stop stopColor="#0e4fc9"/><stop offset=".55" stopColor="#2675f2"/><stop offset="1" stopColor="#155bdc"/></linearGradient>
       <mask id={maskId} x="0" y="0" width={size.width} height={size.height} maskUnits="userSpaceOnUse" style={{ maskType: 'luminance' }}>
         <rect width={size.width} height={size.height} fill="white"/>
-        <text x={size.width / 2} y={textBaseline} textAnchor="middle" fill="black" fontFamily="Anton, Impact, sans-serif" fontSize={fontSize} fontWeight="900" textLength={textLength} lengthAdjust="spacingAndGlyphs">IEEE SB VJEC</text>
+        {wordLines.map(line => <text key={line.text} x={size.width / 2} y={line.y} textAnchor="middle" fill="black" fontFamily="Anton, Impact, sans-serif" fontSize={fontSize} fontWeight="900" textLength={line.length} lengthAdjust="spacingAndGlyphs">{line.text}</text>)}
       </mask>
     </defs>
     <path d={`M 0 ${size.height * curve} Q ${size.width / 2} ${-size.height * curve * .72} ${size.width} ${size.height * curve} V ${size.height} H 0 Z`} fill={`url(#${gradientId})`} mask={`url(#${maskId})`}/>
-    <text className="banner-solid-word" x={size.width / 2} y={textBaseline} textAnchor="middle" fill="#ff5268" fontFamily="Anton, Impact, sans-serif" fontSize={fontSize} fontWeight="900" textLength={textLength} lengthAdjust="spacingAndGlyphs">IEEE SB VJEC</text>
+    {wordLines.map(line => <text key={`solid-${line.text}`} className="banner-solid-word" x={size.width / 2} y={line.y} textAnchor="middle" fill="#ff5268" fontFamily="Anton, Impact, sans-serif" fontSize={fontSize} fontWeight="900" textLength={line.length} lengthAdjust="spacingAndGlyphs">{line.text}</text>)}
   </svg>;
 }
 function PublicProfile({ slug }) {
