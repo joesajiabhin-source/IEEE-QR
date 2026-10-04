@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import { ArrowDown, ArrowDownToLine, ArrowUpRight, Check, Copy, Instagram, Linkedin, Link as LinkIcon, Mail, Phone, QrCode, Share2, X, Youtube } from 'lucide-react';
 import './minimal.css';
+import './spotlight.css';
 
 const API_BASE = (import.meta.env.VITE_API_BASE_URL || '').replace(/\/$/, '');
 async function api(path) {
@@ -25,6 +26,7 @@ function PublicProfile({ slug }) {
   const [qrOpen, setQrOpen] = useState(false);
   const [notice, setNotice] = useState('');
   const aboutRef = useRef(null);
+  const heroRef = useRef(null);
   useEffect(() => {
     let current = true;
     api(`/api/profiles/${encodeURIComponent(slug)}`).then(result => { if (current) setData(result); }).catch(err => { if (current) setError(err.message); });
@@ -49,6 +51,29 @@ function PublicProfile({ slug }) {
     window.addEventListener('keydown', onEscape);
     return () => window.removeEventListener('keydown', onEscape);
   }, [qrOpen]);
+  useEffect(() => {
+    const hero = heroRef.current;
+    if (!hero || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    let frame = 0;
+    let current = 0;
+    let target = 0;
+    const paint = () => {
+      current += (target - current) * 0.12;
+      if (Math.abs(target - current) < 0.002) current = target;
+      hero.style.setProperty('--type-y', `${Math.round(-95 * current)}px`);
+      hero.style.setProperty('--person-y', `${Math.round(-42 * current)}px`);
+      hero.style.setProperty('--banner-y', `${Math.round(26 * current)}px`);
+      frame = current === target ? 0 : requestAnimationFrame(paint);
+    };
+    const update = () => {
+      target = Math.min(1, Math.max(0, -hero.getBoundingClientRect().top / Math.max(1, hero.offsetHeight)));
+      if (!frame) frame = requestAnimationFrame(paint);
+    };
+    window.addEventListener('scroll', update, { passive: true });
+    window.addEventListener('resize', update);
+    update();
+    return () => { window.removeEventListener('scroll', update); window.removeEventListener('resize', update); cancelAnimationFrame(frame); };
+  }, [error]);
   const profile = data?.profile;
   const url = data?.url;
   const copyUrl = async () => {
@@ -82,21 +107,16 @@ function PublicProfile({ slug }) {
     <header className="site-header"><div className="shell header-inner"><Logo /><span className="header-label">COORDINATOR PROFILE <span className="header-dot" /></span></div></header>
     {error ? <main className="state-page shell"><span className="eyebrow">PROFILE UNAVAILABLE</span><h1>Profile not found.</h1><p>This profile may be inactive or the link may have changed.</p></main>
       : <main>
-          <section className="hero-stage" aria-label="IEEE coordinator profile introduction">
-            <div className="shell hero-inner">
-              <div className="hero-copy">
-                <p className="eyebrow hero-caption">IEEE STUDENT BRANCH · VJEC</p>
-                <span className="hero-rule" aria-hidden="true" />
-                <p className="hero-intro-label">Coordinator profile</p>
-                <h1>{profile?.name || 'Coordinator'}</h1>
-                {profile && <><p className="hero-role">{profile.designation}{profile.team_role ? ` · ${profile.team_role}` : ''}</p><p className="hero-affiliation">{profile.organization || 'IEEE SB VJEC'}{profile.society ? ` / ${profile.society}` : ''}</p></>}
-                <div className="hero-actions"><a className="primary-action" href="#sb-vjec">View profile <ArrowDown size={18} /></a>{profile && <button className="quiet-action" onClick={downloadVcard}>Save contact <ArrowDownToLine size={18} /></button>}</div>
-                {profile && <p className="hero-number">COORDINATOR ID&nbsp; {String(profile.id).padStart(4, '0')}</p>}
-              </div>
-              <div className="hero-visual">
-                <span className="portrait-watermark" aria-hidden="true">IEEE</span>
-                {(profile || slug === 'arjun') && <Portrait profile={profile || { slug, name: '', photo: null }} />}
-                <div className="visual-caption"><span>IEEE SB VJEC</span><span>PEOPLE BEHIND THE BRANCH</span></div>
+          <section className="hero-stage" ref={heroRef} aria-label="IEEE coordinator profile introduction">
+            <div className="hero-beams" aria-hidden="true" />
+            <div className="hero-inner">
+              <p className="eyebrow hero-caption">IEEE STUDENT BRANCH · VJEC</p>
+              <div className="hero-type-motion"><div className="hero-word" aria-hidden="true"><span>I</span><span>E</span><span>E</span><span>E</span></div></div>
+              <div className="portrait-motion">{(profile || slug === 'arjun') && <Portrait profile={profile || { slug, name: '', photo: null }} />}</div>
+              <div className="banner-motion" aria-hidden="true"><div className="hero-banner" /></div>
+              <div className="banner-content">
+                <div><span className="banner-kicker">COORDINATOR PROFILE{profile ? ` / ${String(profile.id).padStart(4, '0')}` : ''}</span><h1>{profile?.name || 'Coordinator'}</h1>{profile && <span className="banner-role">{profile.designation}{profile.team_role ? ` · ${profile.team_role}` : ''}</span>}</div>
+                <a href="#sb-vjec" className="banner-scroll">Explore profile <ArrowDown size={18} /></a>
               </div>
             </div>
           </section>
