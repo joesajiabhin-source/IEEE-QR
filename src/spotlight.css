@@ -207,3 +207,8 @@ html,body{height:auto;overflow-x:hidden;overflow-y:auto}
 html{scroll-snap-type:none}
 @media(max-width:650px){.hero-stage{height:192svh!important}.hero-inner{height:100svh!important}.rising-panel{top:92%!important;height:100%!important}}
 @media(prefers-reduced-motion:reduce){.hero-stage{height:100svh!important}.hero-inner{position:relative!important;height:100svh!important}.rising-panel{position:absolute!important;top:55%!important;height:45%!important;transform:none!important}}
+
+/* Pause on the full blue banner; the next scroll advances to the links. */
+html{scroll-snap-type:y mandatory}
+.hero-stage{scroll-snap-align:end;scroll-snap-stop:always}
+.about-section{scroll-snap-align:start;scroll-snap-stop:always}
