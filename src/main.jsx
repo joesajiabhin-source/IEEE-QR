@@ -182,10 +182,7 @@ function PublicProfile({ slug }) {
               <div className="portrait-motion">{(profile || slug === 'arjun') && <Portrait profile={profile || { slug, name: '', photo: null }} />}</div>
               <div className="rising-panel">
               <PanelCutout slug={slug} />
-              <span className="banner-wordmark" aria-hidden="true">IEEE SB VJEC</span>
-              <div className="banner-content">
-                <span className="banner-scroll"><span>Scroll to connect</span><ArrowDown size={18} /></span>
-              </div>
+              <span className="banner-scroll-prompt" aria-hidden="true"><span>Scroll down</span><ArrowDown size={16} /></span>
               </div>
             </div>
           </section>
@@ -200,11 +197,10 @@ function PublicProfile({ slug }) {
             </div>
           </section> : <section className="loading-profile shell" aria-live="polite">Loading coordinator details…</section>}
         </main>}
-    <footer className="site-footer"><div className="shell footer-inner"><Logo official /></div></footer>
+    <footer className="site-footer"><div className="shell footer-inner"><Logo official /><span className="footer-note">© {new Date().getFullYear()} IEEE Student Branch · VJEC</span></div></footer>
     {notice && <div className="toast" role="status"><Check size={17} />{notice}</div>}
     {qrOpen && profile && <div className="modal-overlay" onMouseDown={() => setQrOpen(false)}><div className="qr-dialog" role="dialog" aria-modal="true" aria-label={`QR code for ${profile.name}`} onMouseDown={event => event.stopPropagation()}><button className="dialog-close" onClick={() => setQrOpen(false)} aria-label="Close"><X size={20} /></button><span className="eyebrow">SCAN TO CONNECT / {profile.name}</span><h2>{profile.name}</h2><div className="qr-frame"><img src={`${API_BASE}/api/profiles/${encodeURIComponent(profile.slug)}/qr`} alt={`QR code for ${profile.name}`} /></div><p>Scan this code to open the coordinator profile.</p><button className="modal-copy" onClick={copyUrl}><Copy size={18} /> Copy profile link</button></div></div>}
   </div>;
 }
 const slug = window.location.pathname.startsWith('/profile/') ? decodeURIComponent(window.location.pathname.slice(9)) : 'arjun';
 createRoot(document.getElementById('root')).render(<PublicProfile slug={slug} />);
-
