@@ -11,8 +11,8 @@ async function api(path) {
   if (!response.ok) throw new Error(data.error || `Request failed (${response.status})`);
   return data;
 }
-function Logo() {
-  return <a className="brand" href="/" aria-label="IEEE VJEC home"><span className="brand-mark"><img src="/ieee-vjec-logo.png" alt="" /></span><span className="brand-text">IEEE <strong>VJEC</strong><small>Student Branch</small></span></a>;
+function Logo({ official = false }) {
+  return <a className={`brand${official ? ' brand-official' : ''}`} href="/" aria-label={official ? 'IEEE' : 'IEEE VJEC home'}><span className="brand-mark"><img src={official ? '/ieee-official-logo.png' : '/ieee-vjec-logo.png'} alt="" /></span>{!official && <span className="brand-text">IEEE <strong>VJEC</strong><small>Student Branch</small></span>}</a>;
 }
 function Portrait({ profile }) {
   const isReferencePortrait = profile.slug === 'arjun';
@@ -97,7 +97,7 @@ function PublicProfile({ slug }) {
     };
     const update = () => {
       const rect = section.getBoundingClientRect();
-      target = clamp((window.innerHeight * .96 - rect.top) / (window.innerHeight * .66));
+      target = clamp((window.innerHeight * .96 - rect.top) / (window.innerHeight * .9));
       if (!frame) frame = requestAnimationFrame(paint);
     };
     window.addEventListener('scroll', update, { passive: true });
@@ -122,14 +122,18 @@ function PublicProfile({ slug }) {
       velocity = (velocity + (target - current) * 0.035) * 0.74;
       current = Math.min(1, Math.max(0, current + velocity));
       if (Math.abs(target - current) < 0.0015 && Math.abs(velocity) < 0.0015) { current = target; velocity = 0; }
-      hero.style.setProperty('--type-y', `${Math.round(-95 * current)}px`);
-      hero.style.setProperty('--person-y', `${Math.round(-42 * current)}px`);
+      const sceneHeight = hero.querySelector('.hero-inner').clientHeight;
+      const settleProgress = Math.min(1, current / .5);
+      const mobileScene = window.matchMedia('(max-width: 650px)').matches;
+      const exitStart = mobileScene ? .82 : .7;
+      const exitProgress = Math.min(1, Math.max(0, (current - exitStart) / (1 - exitStart)));
+      hero.style.setProperty('--type-y', `${Math.round(-95 * current - sceneHeight * exitProgress)}px`);
+      hero.style.setProperty('--person-y', `${Math.round(-42 * current - sceneHeight * exitProgress)}px`);
       const introProgress = Math.min(1, current / .18);
       const introEase = introProgress * introProgress * (3 - 2 * introProgress);
       hero.style.setProperty('--intro-opacity', String(1 - introEase));
-      const panelProgress = Math.min(1, current / .75);
-      hero.style.setProperty('--panel-rise', `${Math.round(hero.querySelector('.hero-inner').clientHeight * .68 * panelProgress)}px`);
-      const easedReveal = panelProgress >= .985 ? 1 : 0;
+      hero.style.setProperty('--panel-rise', `${Math.round(sceneHeight * (.68 * settleProgress + exitProgress))}px`);
+      const easedReveal = settleProgress >= .985 ? 1 : 0;
       hero.style.setProperty('--cutout-reveal', String(easedReveal));
       hero.style.setProperty('--cutout-rise', `${Math.round(hero.querySelector('.hero-inner').clientHeight * .14 * (1 - easedReveal))}px`);
       frame = current === target ? 0 : requestAnimationFrame(paint);
@@ -173,13 +177,12 @@ function PublicProfile({ slug }) {
   ].filter(Boolean) : [];
 
   return <div className="site">
-    <header className="site-header"><div className="shell header-inner"><Logo /><span className="header-label">COORDINATOR PROFILE <span className="header-dot" /></span></div></header>
+    <header className="site-header"><div className="shell header-inner"><Logo /></div></header>
     {error ? <main className="state-page shell"><span className="eyebrow">PROFILE UNAVAILABLE</span><h1>Profile not found.</h1><p>This profile may be inactive or the link may have changed.</p></main>
       : <main>
           <section className="hero-stage" ref={heroRef} aria-label="IEEE coordinator profile introduction">
             <div className="hero-beams" aria-hidden="true" />
             <div className="hero-inner">
-              <p className="eyebrow hero-caption">IEEE STUDENT BRANCH · VJEC</p>
               {profile && <div className="hero-intro" aria-hidden="true"><span>COORDINATOR PROFILE / {String(profile.id).padStart(4, '0')}</span><h1>{profile.name}</h1><p>{profile.designation}{profile.team_role ? ` · ${profile.team_role}` : ''}</p></div>}
               <div className="hero-type-motion"><div className="hero-word" aria-hidden="true"><span>I</span><span>E</span><span>E</span><span>E</span></div></div>
               <div className="portrait-motion">{(profile || slug === 'arjun') && <Portrait profile={profile || { slug, name: '', photo: null }} />}</div>
@@ -203,10 +206,11 @@ function PublicProfile({ slug }) {
             </div>
           </section> : <section className="loading-profile shell" aria-live="polite">Loading coordinator details…</section>}
         </main>}
-    <footer className="site-footer"><div className="shell footer-inner"><Logo /><span>IEEE SB VJEC · {new Date().getFullYear()}</span></div></footer>
+    <footer className="site-footer"><div className="shell footer-inner"><Logo official /><span>IEEE · {new Date().getFullYear()}</span></div></footer>
     {notice && <div className="toast" role="status"><Check size={17} />{notice}</div>}
     {qrOpen && profile && <div className="modal-overlay" onMouseDown={() => setQrOpen(false)}><div className="qr-dialog" role="dialog" aria-modal="true" aria-label={`QR code for ${profile.name}`} onMouseDown={event => event.stopPropagation()}><button className="dialog-close" onClick={() => setQrOpen(false)} aria-label="Close"><X size={20} /></button><span className="eyebrow">SCAN TO CONNECT / {profile.name}</span><h2>{profile.name}</h2><div className="qr-frame"><img src={`${API_BASE}/api/profiles/${encodeURIComponent(profile.slug)}/qr`} alt={`QR code for ${profile.name}`} /></div><p>Scan this code to open the coordinator profile.</p><button className="modal-copy" onClick={copyUrl}><Copy size={18} /> Copy profile link</button></div></div>}
   </div>;
 }
 const slug = window.location.pathname.startsWith('/profile/') ? decodeURIComponent(window.location.pathname.slice(9)) : 'arjun';
 createRoot(document.getElementById('root')).render(<PublicProfile slug={slug} />);
+
