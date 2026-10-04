@@ -68,12 +68,40 @@ function PublicProfile({ slug }) {
   }, [data]);
   useEffect(() => {
     const section = aboutRef.current;
-    if (!section || !('IntersectionObserver' in window)) return;
-    const observer = new IntersectionObserver(entries => {
-      if (entries.some(entry => entry.isIntersecting)) { section.classList.add('in-view'); observer.disconnect(); }
-    }, { threshold: 0.12 });
-    observer.observe(section);
-    return () => observer.disconnect();
+    if (!section || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    let frame = 0;
+    let current = 0;
+    let target = 0;
+    const clamp = value => Math.min(1, Math.max(0, value));
+    const reveal = (progress, start, end) => clamp((progress - start) / (end - start));
+    const paint = () => {
+      current += (target - current) * .16;
+      if (Math.abs(target - current) < .001) current = target;
+      const setMotion = (element, value) => {
+        if (!element) return;
+        element.style.setProperty('--enter-opacity', value.toFixed(3));
+        element.style.setProperty('--enter-y', `${((1 - value) * 22).toFixed(1)}px`);
+        element.style.setProperty('--enter-blur', `${((1 - value) * 7).toFixed(1)}px`);
+        element.style.setProperty('--enter-scale', (.97 + value * .03).toFixed(3));
+      };
+      setMotion(section.querySelector('.about-kicker'), reveal(current, .02, .18));
+      setMotion(section.querySelector('.branch-heading'), reveal(current, .12, .32));
+      section.querySelectorAll('.social-card').forEach((card, index) => {
+        const start = .26 + index * .12;
+        setMotion(card, reveal(current, start, start + .2));
+      });
+      setMotion(section.querySelector('.profile-actions'), reveal(current, .58, .82));
+      frame = current === target ? 0 : requestAnimationFrame(paint);
+    };
+    const update = () => {
+      const rect = section.getBoundingClientRect();
+      target = clamp((window.innerHeight * .96 - rect.top) / (window.innerHeight * .66));
+      if (!frame) frame = requestAnimationFrame(paint);
+    };
+    window.addEventListener('scroll', update, { passive: true });
+    window.addEventListener('resize', update);
+    update();
+    return () => { window.removeEventListener('scroll', update); window.removeEventListener('resize', update); cancelAnimationFrame(frame); };
   }, [data]);
   useEffect(() => {
     if (!qrOpen) return;
@@ -93,7 +121,7 @@ function PublicProfile({ slug }) {
       hero.style.setProperty('--type-y', `${Math.round(-95 * current)}px`);
       hero.style.setProperty('--person-y', `${Math.round(-42 * current)}px`);
       const panelProgress = Math.min(1, current / .75);
-      hero.style.setProperty('--panel-rise', `${Math.round(hero.querySelector('.hero-inner').clientHeight * .72 * panelProgress)}px`);
+      hero.style.setProperty('--panel-rise', `${Math.round(hero.querySelector('.hero-inner').clientHeight * .68 * panelProgress)}px`);
       const reveal = Math.min(1, Math.max(0, (panelProgress - .55) / .15));
       const easedReveal = reveal * reveal * (3 - 2 * reveal);
       hero.style.setProperty('--cutout-reveal', String(easedReveal));
