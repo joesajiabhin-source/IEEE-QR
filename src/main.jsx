@@ -34,7 +34,7 @@ function PanelCutout({ slug }) {
     observer.observe(panel);
     return () => observer.disconnect();
   }, []);
-  const fontSize = Math.min(280, size.width * .165);
+  const fontSize = Math.min(300, size.width * .18);
   const textLength = Math.min(size.width * .69, fontSize * 6.2);
   const maskId = `banner-cut-${slug.replace(/[^a-z0-9_-]/gi, '')}`;
   const gradientId = `banner-blue-${slug.replace(/[^a-z0-9_-]/gi, '')}`;
@@ -92,8 +92,7 @@ function PublicProfile({ slug }) {
       hero.style.setProperty('--type-y', `${Math.round(-95 * current)}px`);
       hero.style.setProperty('--person-y', `${Math.round(-42 * current)}px`);
       hero.style.setProperty('--panel-rise', `${Math.round(hero.querySelector('.hero-inner').clientHeight * .84 * current)}px`);
-      hero.style.setProperty('--content-offset', `${Math.round(hero.querySelector('.hero-inner').clientHeight * .1 * current)}px`);
-      hero.style.setProperty('--display-progress', String(Math.min(1, Math.max(0, (current - .18) / .45))));
+      hero.style.setProperty('--banner-content-opacity', String(Math.min(1, Math.max(0, (current - .2) / .1))));
       frame = current === target ? 0 : requestAnimationFrame(paint);
     };
     const update = () => {
@@ -146,10 +145,10 @@ function PublicProfile({ slug }) {
               <div className="portrait-motion">{(profile || slug === 'arjun') && <Portrait profile={profile || { slug, name: '', photo: null }} />}</div>
               <div className="rising-panel">
               <PanelCutout slug={slug} />
+              </div>
               <div className="banner-content">
                 <div><span className="banner-kicker">COORDINATOR PROFILE{profile ? ` / ${String(profile.id).padStart(4, '0')}` : ''}</span><h1>{profile?.name || 'Coordinator'}</h1>{profile && <span className="banner-role">{profile.designation}{profile.team_role ? ` · ${profile.team_role}` : ''}</span>}</div>
                 <span className="banner-scroll">Scroll to connect <ArrowDown size={18} /></span>
-              </div>
               </div>
             </div>
           </section>
