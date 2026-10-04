@@ -169,7 +169,7 @@ html{scroll-snap-type:none}.hero-stage{scroll-snap-align:none;scroll-snap-stop:n
 /* Scroll through the layered hero until the blue banner fills the viewport. */
 html,body{height:auto;overflow-x:hidden;overflow-y:auto}
 .site{height:auto;min-height:100svh;overflow:visible}
-.hero-stage{height:148svh!important;min-height:0!important;overflow:clip}
+.hero-stage{height:148svh!important;min-height:0!important;overflow:visible!important}
 .hero-inner{position:sticky!important;top:0;height:100svh!important;min-height:0!important;overflow:hidden!important}
 .rising-panel{top:55%!important;bottom:auto!important;height:calc(45% + var(--panel-rise,0px))!important;transform:translate3d(0,calc(0px - var(--panel-rise,0px)),0)!important;transform-origin:top center;will-change:transform}
 .hero-intro{opacity:var(--intro-opacity,1)}
